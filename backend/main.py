@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -8,12 +9,15 @@ import io
 from models import Neurologue, get_db, init_db
 import httpx
 
+# MCP Server URL - configurable via environment  
+MCP_URL = os.getenv("MCP_URL", "http://127.0.0.1:8007/mcp")
+
 app = FastAPI(title="RPPS Neurologues API")
 
 # CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:8000"],
+    allow_origins=["http://localhost:5173", "http://localhost:50000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -180,7 +184,7 @@ async def update_database():
         async with httpx.AsyncClient() as client:
             # Call MCP to fetch latest RPPS data
             response = await client.post(
-                "http://mcp-server:8007/mcp",
+                MCP_URL,
                 json={
                     "jsonrpc": "2.0",
                     "method": "update_rpps",
@@ -188,6 +192,6 @@ async def update_database():
                 },
                 timeout=300.0
             )
-            return {"status": "success", "message": "Update triggered"}
+            return {"status": "success", "message": "Update triggered", "mcp_url": MCP_URL}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
