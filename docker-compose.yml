@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  mcp-server:
+    image: python:3.11-slim
+    container_name: rpps-mcp-server
+    ports:
+      - "127.0.0.1:8007:8007"
+    volumes:
+      - ./data:/app/data
+      - ./backend:/app
+    working_dir: /app
+    command: >
+      sh -c "pip install -q mcp httpx uvicorn && 
+             python mcp_server.py"
+    restart: unless-stopped
+
   api:
     build:
       context: ./backend
@@ -8,11 +22,12 @@ services:
     container_name: rpps-api
     ports:
       - "127.0.0.1:50000:8000"
+      - "127.0.0.1:50001:8000"
     volumes:
       - ./data:/app/data
     environment:
       - DATABASE_URL=sqlite:////app/data/neurologues.db
-      - MCP_URL=http://127.0.0.1:8007/mcp
+      - MCP_URL=http://host.docker.internal:8007/mcp
     restart: unless-stopped
 
   frontend:

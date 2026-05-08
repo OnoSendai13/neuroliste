@@ -1,23 +1,26 @@
 import os
+import sys
+import gzip
+import io
+import requests
+from datetime import datetime
+
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 import csv
-import io
-from models import Neurologue, get_db, init_db
-import httpx
 
-# MCP Server URL - configurable via environment  
-MCP_URL = os.getenv("MCP_URL", "http://127.0.0.1:8007/mcp")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from models import Neurologue, get_db, init_db
 
 app = FastAPI(title="RPPS Neurologues API")
 
 # CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:50000"],
+    allow_origins=["http://localhost:5173", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -105,7 +108,6 @@ def get_locations(
         Neurologue.commune
     ).all()
     
-    # Group by departement then commune
     locations = {}
     for dep, com in results:
         if dep not in locations:
@@ -114,7 +116,6 @@ def get_locations(
             locations[dep].append(com)
     
     if search and search in locations:
-        # Return autocomplete for commune
         return {"communes": locations[search][:10]}
     
     return {"departements": locations}
@@ -142,7 +143,6 @@ def export_csv(
         output = io.StringIO()
         writer = csv.writer(output)
         
-        # Header
         writer.writerow([
             "Nom", "Prénom", "Commune", "Département", "Région",
             "Téléphone", "Email", "Mode Exercice", "Numéro RPPS"
@@ -152,7 +152,6 @@ def export_csv(
         output.seek(0)
         output.truncate(0)
         
-        # Data
         for doc in query.yield_per(100):
             writer.writerow([
                 doc.nom, doc.prenom, doc.commune, doc.departement,
@@ -179,19 +178,10 @@ def export_csv(
 
 @app.post("/api/update")
 async def update_database():
-    """Trigger database update via MCP server"""
+    """Trigger database update from data.gouv.fr RPPS files"""
     try:
-        async with httpx.AsyncClient() as client:
-            # Call MCP to fetch latest RPPS data
-            response = await client.post(
-                MCP_URL,
-                json={
-                    "jsonrpc": "2.0",
-                    "method": "update_rpps",
-                    "id": 1
-                },
-                timeout=300.0
-            )
-            return {"status": "success", "message": "Update triggered", "mcp_url": MCP_URL}
+        from scripts.load_rpps import load_neurologues
+        load_neurologues()
+        return {"status": "success", "message": "Database updated"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
