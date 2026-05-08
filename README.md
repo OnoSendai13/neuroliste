@@ -47,7 +47,11 @@ Les données sont téléchargées directement depuis data.gouv.fr :
 
 Les médecins sont identifiés comme neurologues si :
 1. ✅ Diplôme avec code "CESM15", "DSM30", ou "DIP143" (Neurologie) dans dipl-autexerc
-2. ✅ **ET** savoir-faire avec code "SM32" (Neurologie), "SM31" (Neuro-chirurgie) ou "SM33" (Neuro-psychiatrie)
+2. ✅ **ET** savoir-faire avec code **"SM32"** (Neurologie uniquement) dans savoirfaire
+
+**Code SM exclus :**
+- SM31 = Neuro-chirurgie (exclu)
+- SM33 = Neuro-psychiatrie (exclu)
 
 ## 🎯 Fonctionnalités
 
