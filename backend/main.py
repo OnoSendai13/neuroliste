@@ -20,7 +20,7 @@ app = FastAPI(title="RPPS Neurologues API")
 # CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:8000"],
+    allow_origins=["http://localhost:31000", "http://localhost:30000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -176,12 +176,22 @@ def export_csv(
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
-@app.post("/api/update")
-async def update_database():
-    """Trigger database update from data.gouv.fr RPPS files"""
+@app.post("/api/load-data")
+async def load_data():
+    """Load RPPS neurologue data from data.gouv.fr"""
+    import subprocess
     try:
-        from scripts.load_rpps import load_neurologues
-        load_neurologues()
-        return {"status": "success", "message": "Database updated"}
+        result = subprocess.run(
+            ["python", "../scripts/load_rpps.py"],
+            cwd="/mnt/g/Neuro-liste/rpps-neuro-app/backend",
+            capture_output=True,
+            text=True,
+            timeout=600
+        )
+        if result.returncode == 0:
+            return {"status": "success", "message": "Data loaded", "output": result.stdout}
+        raise HTTPException(status_code=500, detail=result.stderr)
+    except subprocess.TimeoutExpired:
+        raise HTTPException(status_code=500, detail="Loading timed out")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,4 +1,4 @@
-# 🧠 Neuroliste - Annuaire des Neurologues Français
+# Neuroliste - Annuaire des Neurologues Français
 
 Application web pour explorer et exporter les neurologues français depuis la base RPPS (Répertoire des Professionnels de Santé).
 
@@ -9,7 +9,7 @@ Application web pour explorer et exporter les neurologues français depuis la ba
 - Node.js 18+ (pour développement frontend)
 - SQLite
 
-### Installation
+### Installation 
 
 ```bash
 # Cloner le projet
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 python ../scripts/load_rpps.py
 
 # Démarrer l'API
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --port 30000
 ```
 
 ### Frontend
@@ -32,7 +32,7 @@ uvicorn main:app --reload --port 8000
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev  # http://localhost:31000
 ```
 
 ## 📊 Données RPPS
@@ -55,6 +55,7 @@ Les médecins sont identifiés comme neurologues si :
 - 💼 **Mode exercice** : Cabinet (libéral) ou Hôpital
 - 📥 **Export CSV** configuré avec filtres appliqués
 - 📱 **Interface responsive** React
+- 🔘 **Bouton "Load RPPS Data"** : Charge les données depuis l'interface
 
 ## 🛠️ API Endpoints
 
@@ -68,8 +69,8 @@ GET /api/locations?departement=69
 # Export CSV
 GET /api/export?departement=69&mode_exercice=LIBERAL
 
-# Trigger mise à jour des données
-POST /api/update
+# Charger les données RPPS depuis frontend
+POST /api/load-data
 ```
 
 ## 📄 License

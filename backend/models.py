@@ -35,7 +35,7 @@ class Neurologue(Base):
     statut = Column(String, default="ACTIF")
 
 # Database setup
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/neurologues.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:////mnt/g/Neuro-liste/rpps-neuro-app/backend/data/neurologues.db")
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

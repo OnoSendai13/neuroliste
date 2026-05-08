@@ -14,6 +14,7 @@ function App() {
   const [doctors, setDoctors] = React.useState([])
   const [total, setTotal] = React.useState(0)
   const [loading, setLoading] = React.useState(false)
+  const [loadingData, setLoadingData] = React.useState(false)
 
   React.useEffect(() => {
     fetchDoctors()
@@ -26,11 +27,30 @@ function App() {
       if (v) params.append(k, v)
     })
     
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/doctors?${params}`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/doctors?${params}`)
     const data = await res.json()
     setDoctors(data.doctors)
     setTotal(data.total)
     setLoading(false)
+  }
+
+  const handleLoadData = async () => {
+    setLoadingData(true)
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/load-data`, {
+        method: 'POST'
+      })
+      const data = await res.json()
+      if (data.status === 'success') {
+        alert(`Data loaded: ${data.output || ''}`)
+        fetchDoctors()
+      } else {
+        alert(`Error: ${data.message || JSON.stringify(data)}`)
+      }
+    } catch (e) {
+      alert(`Error: ${e.message}`)
+    }
+    setLoadingData(false)
   }
 
   const handleExport = async () => {
@@ -53,11 +73,20 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>🧠 RPPS Neurologues</h1>
-        <p>Annuaire des neurologues français</p>
+        <h1>RPPS Neurologues</h1>
+        <p>Annuaire des neurologues francais</p>
       </header>
       
       <main>
+        <div style={{marginBottom: '1rem'}}>
+          <button onClick={handleLoadData} disabled={loadingData}>
+            {loadingData ? 'Loading...' : 'Load RPPS Data'}
+          </button>
+          <span style={{marginLeft: '1rem', color: '#666'}}>
+            {total} neurologue{total > 1 ? 's' : ''} found
+          </span>
+        </div>
+        
         <Filters 
           filters={filters} 
           onFilterChange={setFilters}
