@@ -84,13 +84,13 @@ def load_neurologues():
         if i == 0:  # Skip header
             continue
         parts = line.strip().split('|')
-        if len(parts) < 45:
+        if len(parts) < 45:  # Need at least 45 for email (col 44)
             continue
         
-        # Columns from personne file header:
-        # 0=TypeId, 1=Id_PP, 2=Ine, 7=Nom, 8=Prenom, 5=Sexe, 9=CodeProf, 10=LibelleProf,
-        # 16=CodeMode, 17=Mode, 30=TypeVoie, 31=Voie, 35=CodePostal, 37=Commune,
-        # 40=Tel, 43=Email, 44=Dept
+        # Columns from personne file header (0-indexed):
+        # 1=Id_PP, 7=Nom, 8=Prenom, 5=Sexe, 9=CodeProf, 10=LibelleProf,
+        # 16=CodeMode, 17=Mode, 24=RaisonSocialeSite (structure), 30=TypeVoie, 31=Voie, 35=CodePostal, 
+        # 36=CodeCommune, 37=Commune, 40=Tel, 43=Email, 44=DeptCode
         id_ppss = parts[1]  # Id_PP is column 1
         if id_ppss not in neuro_ids:
             continue
@@ -100,27 +100,48 @@ def load_neurologues():
             continue
         seen_ids.add(id_ppss)
         
+        # Fix encoding issues (NÃ®mes -> Nîmes)
+        def fix_encoding(s):
+            if not s:
+                return s
+            try:
+                return s.encode('latin1').decode('utf-8')
+            except:
+                return s
+        
         adresse = f"{parts[31]} {parts[32]}" if len(parts) > 32 else None
+        
+        # Derive departement from commune code if not in col 44
+        def derive_dept(commune_code):
+            if not commune_code or len(commune_code) < 2:
+                return None
+            # DOM-TOM: 971, 972, 973, 974, 976
+            if commune_code[:3] in ('971', '972', '973', '974', '976', '977', '978'):
+                return commune_code[:3]
+            return commune_code[:2]
+        
+        dept_from_col = parts[44] if len(parts) > 44 and parts[44] else None
+        commune_code = parts[36] if len(parts) > 36 else None
+        departement = dept_from_col or derive_dept(commune_code)
         
         doc = Neurologue(
             id_ppss=id_ppss,
             numero_rpps=id_ppss,
             ine=parts[2] if len(parts) > 2 else None,
-            nom=parts[7] if len(parts) > 7 else None,
-            prenom=parts[8] if len(parts) > 8 else None,
+            nom=fix_encoding(parts[7]) if len(parts) > 7 else None,
+            prenom=fix_encoding(parts[8]) if len(parts) > 8 else None,
             sexe=parts[5] if len(parts) > 5 else None,
-            adresse=adresse,
+            adresse=fix_encoding(adresse),
             code_postal=parts[35] if len(parts) > 35 else None,
-            commune=parts[37] if len(parts) > 37 else None,
-            departement=parts[44] if len(parts) > 44 else None,
+            commune=fix_encoding(parts[37]) if len(parts) > 37 else None,
+            departement=departement,
             tel=parts[40] if len(parts) > 40 else None,
             mail=parts[43] if len(parts) > 43 else None,
             code_profession=parts[9] if len(parts) > 9 else None,
             libelle_profession=parts[10] if len(parts) > 10 else None,
             mode_exercice=parts[17] if len(parts) > 17 else None,
             code_mode_exercice=parts[16] if len(parts) > 16 else None,
-            specialite_code="NEURO",
-            specialite_libelle="Neurologie",
+            structure=fix_encoding(parts[24]) if len(parts) > 24 else None,  # Raison sociale site (col 25)
             diplome_neuro="1",
             statut="ACTIF"
         )

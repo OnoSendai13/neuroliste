@@ -1,6 +1,7 @@
 import React from 'react'
 import Filters from './components/Filters'
 import DoctorList from './components/DoctorList'
+import Pagination from './components/Pagination'
 import './App.css'
 
 function App() {
@@ -15,35 +16,51 @@ function App() {
   const [total, setTotal] = React.useState(0)
   const [loading, setLoading] = React.useState(false)
   const [loadingData, setLoadingData] = React.useState(false)
+  const [limit] = React.useState(100)
+  const [currentPage, setCurrentPage] = React.useState(1)
+  const [sortField, setSortField] = React.useState(null)
+  const [sortDir, setSortDir] = React.useState('asc')
 
   React.useEffect(() => {
-    fetchDoctors()
-  }, [filters])
+    fetchDoctors(1)
+  }, [filters, sortField, sortDir])
 
-  const fetchDoctors = async () => {
+  const fetchDoctors = async (page = 1) => {
     setLoading(true)
     const params = new URLSearchParams()
     Object.entries(filters).forEach(([k, v]) => {
       if (v) params.append(k, v)
     })
+    if (sortField) {
+      params.append('sort', sortField)
+      params.append('order', sortDir)
+    }
+    params.append('skip', (page - 1) * limit)
+    params.append('limit', limit)
     
-    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/doctors?${params}`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:30000'}/api/doctors?${params}`)
     const data = await res.json()
     setDoctors(data.doctors)
     setTotal(data.total)
+    setCurrentPage(page)
     setLoading(false)
+  }
+
+  const handleSort = (field) => {
+    setSortField(field)
+    setSortDir(prev => sortField === field && prev === 'asc' ? 'desc' : 'asc')
   }
 
   const handleLoadData = async () => {
     setLoadingData(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/load-data`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:30000'}/api/load-data`, {
         method: 'POST'
       })
       const data = await res.json()
       if (data.status === 'success') {
-        alert(`Data loaded: ${data.output || ''}`)
-        fetchDoctors()
+        alert(`Data loaded`)
+        fetchDoctors(1)
       } else {
         alert(`Error: ${data.message || JSON.stringify(data)}`)
       }
@@ -97,7 +114,19 @@ function App() {
           doctors={doctors}
           total={total}
           loading={loading}
+          sortField={sortField}
+          sortDir={sortDir}
+          onSort={handleSort}
         />
+        
+        {total > limit && (
+          <Pagination
+            currentPage={currentPage}
+            total={total}
+            limit={limit}
+            onPageChange={fetchDoctors}
+          />
+        )}
       </main>
     </div>
   )

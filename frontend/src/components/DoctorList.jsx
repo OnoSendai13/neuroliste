@@ -1,6 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-export default function DoctorList({ doctors, total, loading }) {
+export default function DoctorList({ doctors, total, loading, sortField, sortDir, onSort }) {
+  const handleSort = (field) => {
+    onSort?.(field)
+  }
+
+  const SortIcon = ({ field }) => {
+    if (sortField !== field) return <span className="sort-indicator">⇅</span>
+    return <span className="sort-indicator">{sortDir === 'asc' ? '↑' : '↓'}</span>
+  }
+
   if (loading) {
     return <div className="loading">Chargement...</div>
   }
@@ -14,17 +23,19 @@ export default function DoctorList({ doctors, total, loading }) {
       <table>
         <thead>
           <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Ville</th>
-            <th>Département</th>
-            <th>Exercice</th>
+            <th onClick={() => handleSort('nom')} className="sortable">Nom <SortIcon field="nom" /></th>
+            <th onClick={() => handleSort('prenom')} className="sortable">Prénom <SortIcon field="prenom" /></th>
+            <th onClick={() => handleSort('commune')} className="sortable">Ville <SortIcon field="commune" /></th>
+            <th onClick={() => handleSort('departement')} className="sortable">Département <SortIcon field="departement" /></th>
+            <th onClick={() => handleSort('mode_exercice')} className="sortable">Exercice <SortIcon field="mode_exercice" /></th>
+            <th>Structure</th>
+            <th>Email</th>
             <th>Contact</th>
           </tr>
         </thead>
         <tbody>
           {doctors.length === 0 ? (
-            <tr><td colSpan="6" className="no-results">Aucun neurologue trouvé</td></tr>
+            <tr><td colSpan="8" className="no-results">Aucun neurologue trouvé</td></tr>
           ) : (
             doctors.map(doc => (
               <tr key={doc.id_ppss}>
@@ -34,14 +45,15 @@ export default function DoctorList({ doctors, total, loading }) {
                 <td>{doc.departement}</td>
                 <td>
                   <span className={`badge ${doc.mode_exercice?.toLowerCase()}`}>
-                    {doc.mode_exercice === 'LIBERAL' ? '🏥 Cabinet' : 
-                     doc.mode_exercice === 'HOSPITALIER' ? '🏥 Hôpital' : doc.mode_exercice}
+                    {doc.mode_exercice === 'L' ? 'Cabinet' : 
+                     doc.mode_exercice === 'S' ? 'Salarié' : 
+                     doc.mode_exercice === 'H' ? 'Hospitalier' : 
+                     doc.mode_exercice || '-'}
                   </span>
                 </td>
-                <td>
-                  {doc.tel && <span>📞 {doc.tel}</span>}
-                  {doc.mail && <br /><span>✉️ {doc.mail}</span>}
-                </td>
+                <td>{doc.structure ? doc.structure.split(' - ')[0] : ''}</td>
+                <td>{doc.mail}</td>
+                <td>{doc.tel}</td>
               </tr>
             ))
           )}

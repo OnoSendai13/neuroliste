@@ -27,6 +27,7 @@ class Neurologue(Base):
     libelle_profession = Column(String)
     mode_exercice = Column(String)
     code_mode_exercice = Column(String)
+    structure = Column(String)  # Raison sociale de l'établissement
     diplome_neuro = Column(String)
     specialite_code = Column(String)
     specialite_libelle = Column(String)

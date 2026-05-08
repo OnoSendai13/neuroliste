@@ -34,6 +34,32 @@ async def startup_event():
 def root():
     return {"message": "RPPS Neurologues API", "docs": "/docs"}
 
+@app.get("/api/neurologues")
+def get_neurologues(
+    departement: str = Query(None),
+    commune: str = Query(None),
+    mode_exercice: str = Query(None),
+    search: str = Query(None),
+    sort: str = Query(None),
+    order: str = Query("asc"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=1000),
+    db: Session = Depends(get_db)
+):
+    """Alias for /api/doctors for backwards compatibility."""
+    return get_doctors(
+        region=None,
+        departement=departement,
+        commune=commune,
+        mode_exercice=mode_exercice,
+        search=search,
+        sort=sort,
+        order=order,
+        skip=skip,
+        limit=limit,
+        db=db
+    )
+
 @app.get("/api/doctors")
 def get_doctors(
     region: str = Query(None),
@@ -41,6 +67,8 @@ def get_doctors(
     commune: str = Query(None),
     mode_exercice: str = Query(None),
     search: str = Query(None),
+    sort: str = Query(None),
+    order: str = Query("asc"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
     db: Session = Depends(get_db)
@@ -65,6 +93,15 @@ def get_doctors(
             )
         )
     
+    # Apply sorting
+    if sort:
+        sort_col = getattr(Neurologue, sort, None)
+        if sort_col:
+            if order == "desc":
+                query = query.order_by(sort_col.desc())
+            else:
+                query = query.order_by(sort_col.asc())
+    
     total = query.count()
     doctors = query.offset(skip).limit(limit).all()
     
@@ -83,7 +120,8 @@ def get_doctors(
                 "tel": d.tel,
                 "mail": d.mail,
                 "mode_exercice": d.mode_exercice,
-                "numero_rpps": d.numero_rpps
+                "numero_rpps": d.numero_rpps,
+                "structure": d.structure
             }
             for d in doctors
         ]
@@ -106,7 +144,7 @@ def get_locations(
     results = query.distinct().with_entities(
         Neurologue.departement,
         Neurologue.commune
-    ).all()
+    ).filter(Neurologue.departement.is_not(None), Neurologue.departement != '').all()
     
     locations = {}
     for dep, com in results:

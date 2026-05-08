@@ -79,7 +79,7 @@ export default function Filters({ filters, onFilterChange, onExport }) {
                 type="radio"
                 name="mode"
                 value=""
-                checked={!filters.mode_exercice}
+                checked={!filters.mode_exercice || filters.mode_exercice === ''}
                 onChange={() => onFilterChange({...filters, mode_exercice: ''})}
               />
               Tous
@@ -88,9 +88,9 @@ export default function Filters({ filters, onFilterChange, onExport }) {
               <input
                 type="radio"
                 name="mode"
-                value="LIBERAL"
-                checked={filters.mode_exercice === 'LIBERAL'}
-                onChange={() => onFilterChange({...filters, mode_exercice: 'LIBERAL'})}
+                value="L"
+                checked={filters.mode_exercice === 'L'}
+                onChange={() => onFilterChange({...filters, mode_exercice: 'L'})}
               />
               Cabinet
             </label>
@@ -98,11 +98,11 @@ export default function Filters({ filters, onFilterChange, onExport }) {
               <input
                 type="radio"
                 name="mode"
-                value="HOSPITALIER"
-                checked={filters.mode_exercice === 'HOSPITALIER'}
-                onChange={() => onFilterChange({...filters, mode_exercice: 'HOSPITALIER'})}
+                value="S"
+                checked={filters.mode_exercice === 'S'}
+                onChange={() => onFilterChange({...filters, mode_exercice: 'S'})}
               />
-              Hôpital
+              Salarié
             </label>
           </div>
         </div>
