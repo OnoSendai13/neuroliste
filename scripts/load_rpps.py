@@ -7,9 +7,12 @@ import os
 import sys
 import io
 import requests
+from sqlalchemy import text
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from backend.models import Neurologue, SessionLocal, init_db
+# Add backend to path - use absolute path
+backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend"))
+sys.path.insert(0, backend_path)
+from models import Neurologue, SessionLocal, init_db
 
 # RPPS static file URLs - updated monthly by Santé Publique France
 FILES = {
@@ -30,6 +33,7 @@ def load_neurologues():
     db = SessionLocal()
     init_db()
     
+    # Clear table
     db.query(Neurologue).delete()
     db.commit()
     
@@ -61,8 +65,8 @@ def load_neurologues():
         if len(parts) >= 12:
             id_ppss = parts[1]  # Id_PP is column 1
             code_sf = parts[11]  # Code savoir-faire is column 11: SM32 = Neurologie
-            # SM32 = Neurologie, SM31 = Neuro-chirurgie, SM33 = Neuro-psychiatrie
-            if code_sf in ("SM32", "SM31", "SM33"):
+            # SM32 = Neurologie uniquement (pas neuro-chirurgien SM31 ou neuro-psychiatrique SM33)
+            if code_sf == "SM32":
                 neuro_sf_ids.add(id_ppss)
     
     print(f"Found {len(neuro_sf_ids)} doctors with Neurologie savoir-faire")
@@ -72,6 +76,7 @@ def load_neurologues():
     print(f"Neurologues with both diplome and savoir-faire: {len(neuro_ids)}")
     
     print("Step 3/3: Loading personne activité...")
+    seen_ids = set()
     count = 0
     pa = download_file(FILES["personne"])
     
@@ -89,6 +94,11 @@ def load_neurologues():
         id_ppss = parts[1]  # Id_PP is column 1
         if id_ppss not in neuro_ids:
             continue
+        
+        # Skip if already processed (deduplication)
+        if id_ppss in seen_ids:
+            continue
+        seen_ids.add(id_ppss)
         
         adresse = f"{parts[31]} {parts[32]}" if len(parts) > 32 else None
         

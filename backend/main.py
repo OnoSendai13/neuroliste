@@ -180,16 +180,22 @@ def export_csv(
 async def load_data():
     """Load RPPS neurologue data from data.gouv.fr"""
     import subprocess
+    import os
     try:
+        script_path = os.path.join(os.path.dirname(__file__), "..", "scripts", "load_rpps.py")
+        python_path = os.path.join(os.path.dirname(__file__), ".venv", "bin", "python")
+        if not os.path.exists(python_path):
+            python_path = "python3"
+        
         result = subprocess.run(
-            ["python", "../scripts/load_rpps.py"],
-            cwd="/mnt/g/Neuro-liste/rpps-neuro-app/backend",
+            [python_path, script_path],
+            cwd=os.path.dirname(__file__),
             capture_output=True,
             text=True,
             timeout=600
         )
         if result.returncode == 0:
-            return {"status": "success", "message": "Data loaded", "output": result.stdout}
+            return {"status": "success", "message": "Data loaded"}
         raise HTTPException(status_code=500, detail=result.stderr)
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=500, detail="Loading timed out")
