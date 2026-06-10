@@ -2,6 +2,7 @@ import React from 'react'
 import Filters from './components/Filters'
 import DoctorList from './components/DoctorList'
 import Pagination from './components/Pagination'
+import StatsPanel from './components/StatsPanel'
 import './App.css'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   const [currentPage, setCurrentPage] = React.useState(1)
   const [sortField, setSortField] = React.useState(null)
   const [sortDir, setSortDir] = React.useState('asc')
+  const [showStats, setShowStats] = React.useState(false)
 
   React.useEffect(() => {
     fetchDoctors(1)
@@ -99,10 +101,15 @@ function App() {
           <button onClick={handleLoadData} disabled={loadingData}>
             {loadingData ? 'Loading...' : 'Load RPPS Data'}
           </button>
+          <button onClick={() => setShowStats(!showStats)} style={{marginLeft: '0.5rem'}}>
+            {showStats ? 'Masquer stats' : 'Afficher stats'}
+          </button>
           <span style={{marginLeft: '1rem', color: '#666'}}>
             {total} neurologue{total > 1 ? 's' : ''} found
           </span>
         </div>
+        
+        {showStats && <StatsPanel apiUrl={import.meta.env.VITE_API_URL || 'http://localhost:30000'} />}
         
         <Filters 
           filters={filters} 

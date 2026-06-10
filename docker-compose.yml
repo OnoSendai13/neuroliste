@@ -24,7 +24,7 @@ services:
       - "127.0.0.1:50000:8000"
       - "127.0.0.1:50001:8000"
     volumes:
-      - ./data:/app/data
+      - ./backend/data:/app/data
     environment:
       - DATABASE_URL=sqlite:////app/data/neurologues.db
       - MCP_URL=http://host.docker.internal:8007/mcp

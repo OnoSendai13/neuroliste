@@ -20,7 +20,7 @@ app = FastAPI(title="RPPS Neurologues API")
 # CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:31000", "http://localhost:30000"],
+    allow_origins=["http://localhost:31000", "http://localhost:30000", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -157,6 +157,46 @@ def get_locations(
         return {"communes": locations[search][:10]}
     
     return {"departements": locations}
+
+@app.get("/api/stats")
+def get_stats(db: Session = Depends(get_db)):
+    """Get statistics for charts and dashboards."""
+    from sqlalchemy import func
+    
+    # Stats by departement
+    dep_stats = db.query(
+        Neurologue.departement,
+        func.count(Neurologue.id_ppss).label("count")
+    ).filter(Neurologue.departement.is_not(None), Neurologue.departement != "").group_by(Neurologue.departement).order_by(func.count().desc()).limit(20).all()
+    
+    # Stats by mode_exercice
+    mode_stats = db.query(
+        Neurologue.mode_exercice,
+        func.count(Neurologue.id_ppss).label("count")
+    ).filter(Neurologue.mode_exercice.is_not(None), Neurologue.mode_exercice != "").group_by(Neurologue.mode_exercice).all()
+    
+    # Stats by region
+    region_stats = db.query(
+        Neurologue.region,
+        func.count(Neurologue.id_ppss).label("count")
+    ).filter(Neurologue.region.is_not(None), Neurologue.region != "").group_by(Neurologue.region).order_by(func.count().desc()).all()
+    
+    # Stats by type_etablissement (new)
+    type_stats = db.query(
+        Neurologue.type_etablissement,
+        func.count(Neurologue.id_ppss).label("count")
+    ).filter(Neurologue.type_etablissement.is_not(None), Neurologue.type_etablissement != "").group_by(Neurologue.type_etablissement).order_by(func.count().desc()).limit(15).all()
+    
+    # Total count
+    total = db.query(Neurologue).count()
+    
+    return {
+        "total": total,
+        "departements": [{"name": d[0], "value": d[1]} for d in dep_stats],
+        "modes": [{"name": m[0] or "Autre", "value": m[1]} for m in mode_stats],
+        "regions": [{"name": r[0] or "Inconnu", "value": r[1]} for r in region_stats],
+        "types_etablissement": [{"name": t[0] or "Inconnu", "value": t[1]} for t in type_stats]
+    }
 
 @app.get("/api/export")
 def export_csv(

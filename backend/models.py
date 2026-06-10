@@ -28,6 +28,7 @@ class Neurologue(Base):
     mode_exercice = Column(String)
     code_mode_exercice = Column(String)
     structure = Column(String)  # Raison sociale de l'établissement
+    type_etablissement = Column(String)  # Type: CHU, Cabinet, EHPAD, etc.
     diplome_neuro = Column(String)
     specialite_code = Column(String)
     specialite_libelle = Column(String)

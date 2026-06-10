@@ -14,11 +14,37 @@ backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ba
 sys.path.insert(0, backend_path)
 from models import Neurologue, SessionLocal, init_db
 
-# RPPS static file URLs - updated monthly by Santé Publique France
+# RPPS static file URLs - auto-discovered from data.gouv.fr API
+# Falls back to hardcoded if API fails
+
+def get_latest_urls():
+    """Fetch current resource URLs from data.gouv.fr API (fallback to hardcoded)"""
+    try:
+        api_url = "https://www.data.gouv.fr/api/2/datasets/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/resources/"
+        resp = requests.get(api_url, timeout=30)
+        resp.raise_for_status()
+        resources = resp.json()
+        
+        urls = {}
+        for r in resources.get('data', []):
+            # API v2: fields are at root level, not in attributes
+            title = r.get('title', '')
+            url = r.get('url', '')
+            if 'personne' in title:
+                urls['personne'] = url
+            elif 'dipl' in title:
+                urls['diplomes'] = url
+            elif 'savoir' in title:
+                urls['savoirfaire'] = url
+        return urls if urls else None
+    except Exception as e:
+        print(f"Warning: Could not fetch latest URLs ({e}), using fallback")
+        return None
+
 FILES = {
-    "personne": "https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260505-082255/ps-libreacces-personne-activite.txt",
-    "diplomes": "https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260505-081946/ps-libreacces-dipl-autexerc.txt",
-    "savoirfaire": "https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260505-082529/ps-libreacces-savoirfaire.txt"
+    "personne": "https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260610-120843/ps-libreacces-personne-activite.txt",
+    "diplomes": "https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260610-120547/ps-libreacces-dipl-autexerc.txt",
+    "savoirfaire": "https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260610-120956/ps-libreacces-savoirfaire.txt"
 }
 
 def download_file(url):
@@ -30,6 +56,13 @@ def download_file(url):
 
 def load_neurologues():
     """Load and filter neurologues from RPPS data."""
+    global FILES
+    # Try to get latest URLs from API first
+    latest = get_latest_urls()
+    if latest:
+        FILES = latest
+        print(f"Using auto-discovered URLs")
+    
     db = SessionLocal()
     init_db()
     
@@ -124,6 +157,10 @@ def load_neurologues():
         commune_code = parts[36] if len(parts) > 36 else None
         departement = dept_from_col or derive_dept(commune_code)
         
+        # Mapping département -> région
+        DEPT_TO_REGION = {'01':'AURA', '02':'GRA', '03':'AURA', '04':'ARA', '05':'ARA', '06':'PAC', '07':'ARA', '08':'GRA', '09':'OCC', '10':'GRA', '11':'OCC', '12':'OCC', '13':'PAC', '14':'NOR', '15':'OCC', '16':'AQU', '17':'AQU', '18':'CEN', '19':'AQU', '2A':'COR', '2B':'COR', '21':'BIF', '22':'BIF', '23':'CEN', '24':'CEN', '25':'BFC', '26':'ARA', '27':'NOR', '28':'CEN', '29':'BIF', '30':'OCC', '31':'OCC', '32':'AQU', '33':'AQU', '34':'LRE', '35':'BIF', '36':'CEN', '37':'PIE', '38':'AQU', '39':'BFC', '40':'AQU', '41':'AQU', '42':'GRA', '43':'AURA', '44':'ARA', '45':'GRA', '46':'OCC', '47':'OCC', '48':'LRE', '49':'PIE', '50':'NOR', '51':'NOR', '53':'PDL', '54':'GRA', '55':'LRE', '56':'ARA', '57':'GRA', '58':'AURA', '59':'BFC', '60':'PIC', '61':'NOR', '62':'AURA', '63':'AURA', '64':'OCC', '65':'AQU', '66':'ARA', '67':'PIC', '68':'CEN', '69':'ARA', '70':'BFC', '71':'BFC', '72':'BFC', '73':'ARA', '74':'ARA', '75':'IDF', '76':'NOR', '77':'PIC', '78':'NOR', '79':'NAQ', '80':'GF', '81':'GF', '971':'GP', '972':'FP', '973':'RE', '974':'RE', '976':'SM', '977':'SM', '978':'PM'}
+        region = DEPT_TO_REGION.get(departement, None) if departement else None
+        
         doc = Neurologue(
             id_ppss=id_ppss,
             numero_rpps=id_ppss,
@@ -135,6 +172,7 @@ def load_neurologues():
             code_postal=parts[35] if len(parts) > 35 else None,
             commune=fix_encoding(parts[37]) if len(parts) > 37 else None,
             departement=departement,
+            region=region,
             tel=parts[40] if len(parts) > 40 else None,
             mail=parts[43] if len(parts) > 43 else None,
             code_profession=parts[9] if len(parts) > 9 else None,
@@ -142,6 +180,7 @@ def load_neurologues():
             mode_exercice=parts[17] if len(parts) > 17 else None,
             code_mode_exercice=parts[16] if len(parts) > 16 else None,
             structure=fix_encoding(parts[24]) if len(parts) > 24 else None,  # Raison sociale site (col 25)
+            type_etablissement=fix_encoding(parts[23]) if len(parts) > 23 else None,  # Type etablissement (col 24) - EHPAD, CHU, Cabinet, etc.
             diplome_neuro="1",
             statut="ACTIF"
         )

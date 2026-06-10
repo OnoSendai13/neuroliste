@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "Starting backend on port 30000..."
 (
   cd "$SCRIPT_DIR/backend"
-  .venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 30000
+  .venv/bin/python -m uvicorn main:app --host localhost --port 30000
 ) &
 
 echo "Starting frontend on port 31000..."
