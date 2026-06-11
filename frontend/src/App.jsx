@@ -118,23 +118,25 @@ function App() {
           onExport={handleExport}
         />
         
-        <DoctorList 
-          doctors={doctors}
-          total={total}
-          loading={loading}
-          sortField={sortField}
-          sortDir={sortDir}
-          onSort={handleSort}
-        />
-        
-        {total > limit && (
-          <Pagination
-            currentPage={currentPage}
+        <div className="table-container">
+          <DoctorList 
+            doctors={doctors}
             total={total}
-            limit={limit}
-            onPageChange={fetchDoctors}
+            loading={loading}
+            sortField={sortField}
+            sortDir={sortDir}
+            onSort={handleSort}
           />
-        )}
+          
+          {total > limit && (
+            <Pagination
+              currentPage={currentPage}
+              total={total}
+              limit={limit}
+              onPageChange={fetchDoctors}
+            />
+          )}
+        </div>
       </main>
     </div>
   )

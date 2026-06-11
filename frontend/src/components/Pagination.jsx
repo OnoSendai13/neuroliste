@@ -21,14 +21,14 @@ export default function Pagination({ currentPage, total, limit, onPageChange }) 
   return (
     <div className="pagination">
       <button 
-        onClick={() => onPageChange(null, null, 1)}
+        onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
       >
         « Début
       </button>
       
       <button 
-        onClick={() => onPageChange(null, null, currentPage - 1)}
+        onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
         ‹ Préc.
@@ -36,7 +36,7 @@ export default function Pagination({ currentPage, total, limit, onPageChange }) 
 
       {start > 1 && (
         <>
-          <button onClick={() => onPageChange(null, null, 1)}>1</button>
+          <button onClick={() => onPageChange(1)}>1</button>
           {start > 2 && <span>...</span>}
         </>
       )}
@@ -45,7 +45,7 @@ export default function Pagination({ currentPage, total, limit, onPageChange }) 
         <button
           key={p}
           className={p === currentPage ? 'active' : ''}
-          onClick={() => onPageChange(null, null, p)}
+          onClick={() => onPageChange(p)}
         >
           {p}
         </button>
@@ -54,21 +54,21 @@ export default function Pagination({ currentPage, total, limit, onPageChange }) 
       {end < totalPages && (
         <>
           {end < totalPages - 1 && <span>...</span>}
-          <button onClick={() => onPageChange(null, null, totalPages)}>
+          <button onClick={() => onPageChange(totalPages)}>
             {totalPages}
           </button>
         </>
       )}
 
       <button 
-        onClick={() => onPageChange(null, null, currentPage + 1)}
+        onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
         Suiv. ›
       </button>
       
       <button 
-        onClick={() => onPageChange(null, null, totalPages)}
+        onClick={() => onPageChange(totalPages)}
         disabled={currentPage === totalPages}
       >
         Fin »
