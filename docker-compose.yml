@@ -38,5 +38,5 @@ services:
     ports:
       - "127.0.0.1:5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:50000
+      - VITE_API_URL=http://127.0.0.1:50000
     restart: unless-stopped

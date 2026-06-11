@@ -27,6 +27,7 @@ export default function DoctorList({ doctors, total, loading, sortField, sortDir
             <th onClick={() => handleSort('prenom')} className="sortable">Prénom <SortIcon field="prenom" /></th>
             <th onClick={() => handleSort('commune')} className="sortable">Ville <SortIcon field="commune" /></th>
             <th onClick={() => handleSort('departement')} className="sortable">Département <SortIcon field="departement" /></th>
+            <th onClick={() => handleSort('region')} className="sortable">Région <SortIcon field="region" /></th>
             <th onClick={() => handleSort('mode_exercice')} className="sortable">Exercice <SortIcon field="mode_exercice" /></th>
             <th>Structure</th>
             <th>Email</th>
@@ -34,8 +35,8 @@ export default function DoctorList({ doctors, total, loading, sortField, sortDir
           </tr>
         </thead>
         <tbody>
-          {doctors.length === 0 ? (
-            <tr><td colSpan="8" className="no-results">Aucun neurologue trouvé</td></tr>
+          {(!doctors || doctors.length === 0) ? (
+            <tr><td colSpan="9" className="no-results">Aucun neurologue trouvé</td></tr>
           ) : (
             doctors.map(doc => (
               <tr key={doc.id_ppss}>
@@ -43,6 +44,7 @@ export default function DoctorList({ doctors, total, loading, sortField, sortDir
                 <td>{doc.prenom}</td>
                 <td>{doc.commune}</td>
                 <td>{doc.departement}</td>
+                <td>{doc.region}</td>
                 <td>
                   <span className={`badge ${doc.mode_exercice?.toLowerCase()}`}>
                     {doc.mode_exercice === 'L' ? 'Cabinet' : 

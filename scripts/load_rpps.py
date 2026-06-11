@@ -7,6 +7,9 @@ import os
 import sys
 import io
 import requests
+import gzip
+import tempfile
+import subprocess
 from sqlalchemy import text
 
 # Add backend to path - use absolute path
@@ -47,12 +50,37 @@ FILES = {
     "savoirfaire": "https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260610-120956/ps-libreacces-savoirfaire.txt"
 }
 
-def download_file(url):
-    """Download txt file and return lines."""
+def download_file(url, filename_hint=None):
+    """Download txt file and return lines using wget for reliability."""
     print(f"Downloading {url}...")
-    resp = requests.get(url, timeout=600)
-    resp.raise_for_status()
-    return io.StringIO(resp.text).readlines()
+    
+    # Use wget for large files - more reliable
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.txt') as tmp:
+            tmp_path = tmp.name
+        
+        result = subprocess.run(
+            ['wget', '-qO', tmp_path, url],
+            capture_output=True,
+            text=True,
+            timeout=900
+        )
+        
+        if result.returncode != 0:
+            # Fallback to requests
+            print(f"wget failed, trying requests...")
+            resp = requests.get(url, timeout=600)
+            resp.raise_for_status()
+            return io.StringIO(resp.text).readlines()
+        
+        with open(tmp_path, 'r', encoding='utf-8', errors='replace') as f:
+            lines = f.readlines()
+        os.unlink(tmp_path)
+        print(f"Downloaded {len(lines)} lines")
+        return lines
+    except Exception as e:
+        print(f"Error downloading {url}: {e}")
+        raise
 
 def load_neurologues():
     """Load and filter neurologues from RPPS data."""
@@ -122,8 +150,8 @@ def load_neurologues():
         
         # Columns from personne file header (0-indexed):
         # 1=Id_PP, 7=Nom, 8=Prenom, 5=Sexe, 9=CodeProf, 10=LibelleProf,
-        # 16=CodeMode, 17=Mode, 24=RaisonSocialeSite (structure), 30=TypeVoie, 31=Voie, 35=CodePostal, 
-        # 36=CodeCommune, 37=Commune, 40=Tel, 43=Email, 44=DeptCode
+        # 15=CodeSavoirFaire, 17=CodeMode, 18=Mode, 24=RaisonSocialeSite (structure),
+        # 30=TypeVoie, 31=Voie, 35=CodePostal, 36=CodeCommune, 37=Commune, 40=Tel, 44=Email
         id_ppss = parts[1]  # Id_PP is column 1
         if id_ppss not in neuro_ids:
             continue
@@ -177,10 +205,10 @@ def load_neurologues():
             mail=parts[43] if len(parts) > 43 else None,
             code_profession=parts[9] if len(parts) > 9 else None,
             libelle_profession=parts[10] if len(parts) > 10 else None,
-            mode_exercice=parts[17] if len(parts) > 17 else None,
-            code_mode_exercice=parts[16] if len(parts) > 16 else None,
-            structure=fix_encoding(parts[24]) if len(parts) > 24 else None,  # Raison sociale site (col 25)
-            type_etablissement=fix_encoding(parts[23]) if len(parts) > 23 else None,  # Type etablissement (col 24) - EHPAD, CHU, Cabinet, etc.
+            mode_exercice=parts[18] if len(parts) > 18 else None,
+            code_mode_exercice=parts[17] if len(parts) > 17 else None,
+            structure=fix_encoding(parts[25]) if len(parts) > 25 else None,  # Raison sociale site
+            type_etablissement=fix_encoding(parts[24]) if len(parts) > 24 else None,  # Type etablissement
             diplome_neuro="1",
             statut="ACTIF"
         )

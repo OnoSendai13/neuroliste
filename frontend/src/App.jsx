@@ -28,6 +28,7 @@ function App() {
   }, [filters, sortField, sortDir])
 
   const fetchDoctors = async (page = 1) => {
+    page = Math.max(1, page)
     setLoading(true)
     const params = new URLSearchParams()
     Object.entries(filters).forEach(([k, v]) => {
@@ -40,10 +41,10 @@ function App() {
     params.append('skip', (page - 1) * limit)
     params.append('limit', limit)
     
-    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:30000'}/api/doctors?${params}`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'}/api/doctors?${params}`)
     const data = await res.json()
-    setDoctors(data.doctors)
-    setTotal(data.total)
+    setDoctors(data.doctors || [])
+    setTotal(data.total || 0)
     setCurrentPage(page)
     setLoading(false)
   }
@@ -56,18 +57,18 @@ function App() {
   const handleLoadData = async () => {
     setLoadingData(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:30000'}/api/load-data`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'}/api/load-data`, {
         method: 'POST'
       })
       const data = await res.json()
       if (data.status === 'success') {
-        alert(`Data loaded`)
+        alert('Data loaded')
         fetchDoctors(1)
       } else {
-        alert(`Error: ${data.message || JSON.stringify(data)}`)
+        alert('Error: ' + (data.message || JSON.stringify(data)))
       }
     } catch (e) {
-      alert(`Error: ${e.message}`)
+      alert('Error: ' + e.message)
     }
     setLoadingData(false)
   }
@@ -78,7 +79,7 @@ function App() {
       if (v) params.append(k, v)
     })
     
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/export?${params}`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'}/api/export?${params}`)
     const blob = await res.blob()
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -109,10 +110,10 @@ function App() {
           </span>
         </div>
         
-        {showStats && <StatsPanel apiUrl={import.meta.env.VITE_API_URL || 'http://localhost:30000'} />}
+        {showStats && <StatsPanel apiUrl={import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'} />}
         
         <Filters 
-          filters={filters} 
+          filters={filters}
           onFilterChange={setFilters}
           onExport={handleExport}
         />

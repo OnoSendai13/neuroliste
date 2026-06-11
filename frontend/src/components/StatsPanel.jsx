@@ -29,7 +29,6 @@ export default function StatsPanel({ apiUrl }) {
   })) || []
 
   // Top 10 types d'etablissement
-  const typeEtabData = stats?.types_etablissement?.slice(0, 10) || []
 
   return (
     <div className="stats-panel">
@@ -79,30 +78,6 @@ export default function StatsPanel({ apiUrl }) {
       </div>
 
       <div className="charts-row">
-        <div className="chart-container">
-          <h4>Types d'établissement</h4>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={typeEtabData}
-                cx="50%"
-                cy="50%"
-                innerRadius={30}
-                outerRadius={70}
-                fill="#8884d8"
-                dataKey="value"
-                label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
-              >
-                {typeEtabData.map((entry, index) => (
-                  <Cell key={`cell-types-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value, name) => [`${value} neurologues`, name]} />
-              <Legend layout="vertical" align="right" verticalAlign="middle" />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
         <div className="chart-container">
           <h4>Répartition par région</h4>
           <ResponsiveContainer width="100%" height={200}>
