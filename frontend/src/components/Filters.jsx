@@ -5,9 +5,22 @@ export default function Filters({ filters, onFilterChange, onExport }) {
   const [communes, setCommunes] = React.useState([])
   const [loadingLocations, setLoadingLocations] = React.useState(false)
 
+  const [regions, setRegions] = React.useState([])
+  
   React.useEffect(() => {
     fetchDepartements()
+    fetchRegions()
   }, [])
+
+  const fetchRegions = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'}/api/stats`)
+      const data = await res.json()
+      setRegions(data.regions?.map(r => r.name) || [])
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   const fetchDepartements = async () => {
     try {
@@ -38,6 +51,19 @@ export default function Filters({ filters, onFilterChange, onExport }) {
   return (
     <div className="filters">
       <div className="filter-row">
+        <div className="filter-group">
+          <label>Région</label>
+          <select 
+            value={filters.region}
+            onChange={(e) => onFilterChange({...filters, region: e.target.value, departement: '', commune: ''})}
+          >
+            <option value="">Toutes les régions</option>
+            {regions.map(r => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="filter-group">
           <label>Département</label>
           <select 
