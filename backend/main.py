@@ -82,7 +82,10 @@ def get_doctors(
     if commune:
         query = query.filter(Neurologue.commune.ilike(f"%{commune}%"))
     if mode_exercice:
-        query = query.filter(Neurologue.mode_exercice == mode_exercice)
+        # Map codes to labels (L/Cabinet, S/Salarié, H/Hospitalier)
+        mode_map = {'L': 'Lib,indép,artis,com', 'S': 'Salarié', 'H': 'Hospitalier', 'B': 'Mixte'}
+        mode_label = mode_map.get(mode_exercice, mode_exercice)
+        query = query.filter(Neurologue.mode_exercice == mode_label)
     if search:
         search_term = f"%{search}%"
         query = query.filter(
@@ -215,7 +218,10 @@ def export_csv(
     if commune:
         query = query.filter(Neurologue.commune.ilike(f"%{commune}%"))
     if mode_exercice:
-        query = query.filter(Neurologue.mode_exercice == mode_exercice)
+        # Map codes to labels
+        mode_map = {'L': 'Lib,indép,artis,com', 'S': 'Salarié', 'H': 'Hospitalier', 'B': 'Mixte'}
+        mode_label = mode_map.get(mode_exercice, mode_exercice)
+        query = query.filter(Neurologue.mode_exercice == mode_label)
     
     def generate_csv():
         output = io.StringIO()
