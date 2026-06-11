@@ -122,6 +122,84 @@ neuroliste/
 └── docker-compose.yml
 ```
 
+## 🌐 Déploiement web
+
+### Avec Nginx (recommandé)
+
+```bash
+# Configuration nginx/nginx.conf
+server {
+    listen 80;
+    server_name votre-domaine.fr;
+    
+    # Frontend static
+    root /var/www/neuroliste/frontend/dist;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    # Proxy API
+    location /api/ {
+        proxy_pass http://127.0.0.1:50000/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+```yaml
+# docker-compose.yml pour production
+version: '3.8'
+services:
+  api:
+    build: ./backend
+    volumes:
+      - ./backend/data:/app/data
+    restart: unless-stopped
+    expose:
+      - "8000"  # Port interne uniquement
+    
+  frontend:
+    build: ./frontend
+    command: ["npm", "run", "build"]
+    volumes:
+      - ./frontend/dist:/var/www/neuroliste/frontend/dist
+    restart: unless-stopped
+```
+
+### Avec Apache + mod_proxy
+
+```apache
+# .htaccess ou configuration virtuel host
+<VirtualHost *:80>
+    ServerName votre-domaine.fr
+    
+    # Frontend
+    DocumentRoot /var/www/neuroliste/frontend/dist
+    
+    # Proxy API vers le backend
+    ProxyPass /api/ http://127.0.0.1:50000/api/
+    ProxyPassReverse /api/ http://127.0.0.1:50000/api/
+    
+    # SPA fallback
+    FallbackResource /index.html
+</VirtualHost>
+```
+
+### Notes production importantes
+
+- **Base de données** : Remplacer SQLite par PostgreSQL/MySQL pour le multi-utilisateur
+- **HTTPS** : Configurer SSL (Let's Encrypt) pour le déploiement public
+- **Mise à jour données** : Créer un cron quotidien pour recharger les données RPPS
+- **Variables** : Modifier les URLs dans le frontend via `.env.production` :
+
+```bash
+# frontend/.env.production
+VITE_API_URL=https://votre-domaine.fr/api
+```
+
 ## 📄 License
 
 MIT - Usage libre pour projets de santé publique
