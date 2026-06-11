@@ -1,5 +1,28 @@
 import React from 'react'
 
+const REGION_NAMES = {
+  'IDF': 'Île-de-France',
+  'ARA': 'Auvergne-Rhône-Alpes',
+  'NOR': 'Hauts-de-France',
+  'BFC': 'Bourgogne-Franche-Comté',
+  'OCC': 'Occitanie',
+  'PDL': 'Pays de la Loire',
+  'PAC': 'Provence-Alpes-Côte d\'Azur',
+  'BIF': 'Bretagne',
+  'GRA': 'Grand Est',
+  'PIC': 'Picardie',
+  'LRE': 'Languedoc-Roussillon',
+  'AQU': 'Nouvelle-Aquitaine',
+  'NAQ': 'Nouvelle-Aquitaine',
+  'GF': 'Guyane',
+  'RE': 'La Réunion',
+  'GP': 'Guadeloupe',
+  'FP': 'Martinique',
+  'SM': 'Saint-Martin',
+  'PM': 'Saint-Pierre-et-Miquelon',
+  'COR': 'Corse'
+}
+
 export default function Filters({ filters, onFilterChange, onExport }) {
   const [departements, setDepartements] = React.useState([])
   const [communes, setCommunes] = React.useState([])
@@ -129,6 +152,26 @@ export default function Filters({ filters, onFilterChange, onExport }) {
                 onChange={() => onFilterChange({...filters, mode_exercice: 'S'})}
               />
               Salarié
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="mode"
+                value="B"
+                checked={filters.mode_exercice === 'B'}
+                onChange={() => onFilterChange({...filters, mode_exercice: 'B'})}
+              />
+              Mixte
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="mode"
+                value="H"
+                checked={filters.mode_exercice === 'H'}
+                onChange={() => onFilterChange({...filters, mode_exercice: 'H'})}
+              />
+              Hospitalier
             </label>
           </div>
         </div>
