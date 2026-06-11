@@ -110,7 +110,7 @@ function App() {
           </span>
         </div>
         
-        {showStats && <StatsPanel apiUrl={import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'} />}
+        {showStats && <StatsPanel apiUrl={import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'} filters={filters} />}
         
         <Filters 
           filters={filters}

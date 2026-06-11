@@ -9,7 +9,7 @@ from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 import csv
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -162,36 +162,54 @@ def get_locations(
     return {"departements": locations}
 
 @app.get("/api/stats")
-def get_stats(db: Session = Depends(get_db)):
+def get_stats(
+    region: str = Query(None),
+    departement: str = Query(None),
+    db: Session = Depends(get_db)
+):
     """Get statistics for charts and dashboards."""
-    from sqlalchemy import func
+    # Stats by departement (filtered if region provided)
+    dep_query = db.query(Neurologue.departement, func.count(Neurologue.id_ppss).label("count"))
+    dep_query = dep_query.filter(Neurologue.departement.is_not(None), Neurologue.departement != '')
+    if region:
+        dep_query = dep_query.filter(Neurologue.region == region)
+    if departement:
+        dep_query = dep_query.filter(Neurologue.departement == departement)
+    dep_stats = dep_query.group_by(Neurologue.departement).order_by(func.count().desc()).limit(20).all()
     
-    # Stats by departement
-    dep_stats = db.query(
-        Neurologue.departement,
-        func.count(Neurologue.id_ppss).label("count")
-    ).filter(Neurologue.departement.is_not(None), Neurologue.departement != "").group_by(Neurologue.departement).order_by(func.count().desc()).limit(20).all()
+    # Stats by mode_exercice (filtered)
+    mode_query = db.query(Neurologue.mode_exercice, func.count(Neurologue.id_ppss).label("count"))
+    if region:
+        mode_query = mode_query.filter(Neurologue.region == region)
+    if departement:
+        mode_query = mode_query.filter(Neurologue.departement == departement)
+    mode_query = mode_query.filter(Neurologue.mode_exercice.is_not(None), Neurologue.mode_exercice != '')
+    mode_stats = mode_query.group_by(Neurologue.mode_exercice).all()
     
-    # Stats by mode_exercice
-    mode_stats = db.query(
-        Neurologue.mode_exercice,
-        func.count(Neurologue.id_ppss).label("count")
-    ).filter(Neurologue.mode_exercice.is_not(None), Neurologue.mode_exercice != "").group_by(Neurologue.mode_exercice).all()
+    # Stats by region (full list unless filtered)
+    if region:
+        region_stats = [(region, dep_stats[0][1] if departement else sum(d[1] for d in dep_stats))]
+    else:
+        region_query = db.query(Neurologue.region, func.count(Neurologue.id_ppss).label("count"))
+        region_query = region_query.filter(Neurologue.region.is_not(None), Neurologue.region != '')
+        region_stats = region_query.group_by(Neurologue.region).order_by(func.count().desc()).all()
     
-    # Stats by region
-    region_stats = db.query(
-        Neurologue.region,
-        func.count(Neurologue.id_ppss).label("count")
-    ).filter(Neurologue.region.is_not(None), Neurologue.region != "").group_by(Neurologue.region).order_by(func.count().desc()).all()
+    # Stats by type_etablissement (filtered)
+    type_query = db.query(Neurologue.type_etablissement, func.count(Neurologue.id_ppss).label("count"))
+    if region:
+        type_query = type_query.filter(Neurologue.region == region)
+    if departement:
+        type_query = type_query.filter(Neurologue.departement == departement)
+    type_query = type_query.filter(Neurologue.type_etablissement.is_not(None), Neurologue.type_etablissement != '')
+    type_stats = type_query.group_by(Neurologue.type_etablissement).order_by(func.count().desc()).limit(15).all()
     
-    # Stats by type_etablissement (new)
-    type_stats = db.query(
-        Neurologue.type_etablissement,
-        func.count(Neurologue.id_ppss).label("count")
-    ).filter(Neurologue.type_etablissement.is_not(None), Neurologue.type_etablissement != "").group_by(Neurologue.type_etablissement).order_by(func.count().desc()).limit(15).all()
-    
-    # Total count
-    total = db.query(Neurologue).count()
+    # Total count (filtered)
+    total_query = db.query(Neurologue)
+    if region:
+        total_query = total_query.filter(Neurologue.region == region)
+    if departement:
+        total_query = total_query.filter(Neurologue.departement == departement)
+    total = total_query.count()
     
     return {
         "total": total,

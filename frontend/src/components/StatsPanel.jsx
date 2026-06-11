@@ -3,16 +3,20 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveCo
 
 const COLORS = ['#0088fe', '#00c494', '#ffab00', '#ff5252', '#ea00ff', '#7a00ff', '#00bcd4', '#ff6b6b', '#4ecdc4', '#1a535c']
 
-export default function StatsPanel({ apiUrl }) {
+export default function StatsPanel({ apiUrl, filters }) {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/stats`)
+    const params = new URLSearchParams()
+    if (filters?.region) params.append('region', filters.region)
+    if (filters?.departement) params.append('departement', filters.departement)
+    
+    fetch(`${apiUrl}/api/stats?${params}`)
       .then(r => r.json())
       .then(setStats)
       .finally(() => setLoading(false))
-  }, [apiUrl])
+  }, [apiUrl, filters])
 
   if (loading) return <div className="stats-loading">Chargement des stats...</div>
 

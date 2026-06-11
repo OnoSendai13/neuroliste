@@ -30,12 +30,15 @@ export default function Filters({ filters, onFilterChange, onExport }) {
   
   React.useEffect(() => {
     fetchDepartements()
+  }, [filters.region])
+  
+  React.useEffect(() => {
     fetchRegions()
   }, [])
 
   const fetchRegions = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'}/api/stats`)
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/stats`)
       const data = await res.json()
       setRegions(data.regions?.map(r => r.name) || [])
     } catch (e) {
@@ -45,7 +48,10 @@ export default function Filters({ filters, onFilterChange, onExport }) {
 
   const fetchDepartements = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'}/api/locations`)
+      const url = filters.region 
+        ? `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/locations?region=${filters.region}`
+        : `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/locations`
+      const res = await fetch(url)
       const data = await res.json()
       setDepartements(Object.keys(data.departements || {}))
     } catch (e) {
@@ -80,7 +86,7 @@ export default function Filters({ filters, onFilterChange, onExport }) {
           >
             <option value="">Toutes les régions</option>
             {regions.map(r => (
-              <option key={r} value={r}>{r}</option>
+              <option key={r} value={r}>{REGION_NAMES[r] || r}</option>
             ))}
           </select>
         </div>
