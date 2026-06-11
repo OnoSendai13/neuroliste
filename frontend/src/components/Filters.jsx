@@ -1,26 +1,24 @@
 import React from 'react'
 
 const REGION_NAMES = {
-  'IDF': 'Île-de-France',
-  'ARA': 'Auvergne-Rhône-Alpes',
-  'NOR': 'Hauts-de-France',
+  'AuRA': 'Auvergne-Rhône-Alpes',
   'BFC': 'Bourgogne-Franche-Comté',
-  'OCC': 'Occitanie',
+  'BIF': 'Bretagne',
+  'Centre-Val': 'Centre-Val de Loire',
+  'Corse': 'Corse',
+  'Grand Est': 'Grand Est',
+  'HDF': 'Hauts-de-France',
+  'IDF': 'Île-de-France',
+  'NAQ': 'Nouvelle-Aquitaine',
+  'Occitanie': 'Occitanie',
   'PDL': 'Pays de la Loire',
   'PAC': 'Provence-Alpes-Côte d\'Azur',
-  'BIF': 'Bretagne',
-  'GRA': 'Grand Est',
-  'PIC': 'Picardie',
-  'LRE': 'Languedoc-Roussillon',
-  'AQU': 'Nouvelle-Aquitaine',
-  'NAQ': 'Nouvelle-Aquitaine',
-  'GF': 'Guyane',
-  'RE': 'La Réunion',
+  'Normandie': 'Normandie',
   'GP': 'Guadeloupe',
+  'GF': 'Guyane',
+  'RE': 'Réunion',
   'FP': 'Martinique',
-  'SM': 'Saint-Martin',
-  'PM': 'Saint-Pierre-et-Miquelon',
-  'COR': 'Corse'
+  'SM': 'Saint-Martin/Saint-Barth'
 }
 
 export default function Filters({ filters, onFilterChange, onExport }) {
