@@ -27,6 +27,8 @@ function App() {
   const [theme, setTheme] = React.useState('system')
   const [lastExtraction, setLastExtraction] = React.useState(null)
   const [lastImport, setLastImport] = React.useState(null)
+  const [loadStatus, setLoadStatus] = React.useState('')
+  const [loadError, setLoadError] = React.useState('')
 
   React.useEffect(() => {
     fetchDoctors(1)
@@ -90,19 +92,22 @@ function App() {
 
   const handleLoadData = async () => {
     setLoadingData(true)
+    setLoadStatus('Téléchargement des données RPPS...')
+    setLoadError('')
     try {
       const res = await fetch(`${apiUrl}/api/load-data`, {
         method: 'POST'
       })
       const data = await res.json()
       if (data.status === 'success') {
-        alert('Données chargées avec succès')
-        fetchDoctors(1)
+        setLoadStatus('Données chargées avec succès')
+        await fetchDoctors(1)
+        setLoadStatus('')
       } else {
-        alert('Erreur: ' + (data.message || JSON.stringify(data)))
+        setLoadError(data.detail || data.message || 'Erreur inconnue')
       }
     } catch (e) {
-      alert('Erreur: ' + e.message)
+      setLoadError(e.message)
     }
     setLoadingData(false)
   }
@@ -189,6 +194,13 @@ function App() {
                   )}
                 </button>
               </div>
+              {(loadStatus || loadError) && (
+                <div className={`mt-4 rounded-xl px-4 py-3 text-sm font-medium ${
+                  loadError ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-primary/10 text-primary'
+                }`}>
+                  {loadError || loadStatus}
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">

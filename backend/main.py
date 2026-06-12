@@ -304,7 +304,7 @@ async def load_data():
             cwd=os.path.dirname(__file__),
             capture_output=True,
             text=True,
-            timeout=600
+            timeout=1800
         )
         if result.returncode == 0:
             return {"status": "success", "message": "Data loaded"}
