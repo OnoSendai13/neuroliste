@@ -196,7 +196,7 @@ export default function DoctorTable({ doctors, total, loading, sortField, sortDi
       </div>
       
       {selectedPhone && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setSelectedPhone(null)}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm pt-20 sm:pt-24" onClick={() => setSelectedPhone(null)}>
           <div className="glass-panel rounded-2xl p-6 max-w-sm w-full mx-4 animate-scale-in" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Numéro de téléphone</h3>
