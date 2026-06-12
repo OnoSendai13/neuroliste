@@ -1,5 +1,5 @@
 import React from 'react'
-import { MapPin, BuildingOffice, MagnifyingGlass, Download, FunnelSimple, X } from '@phosphor-icons/react'
+import { MapPin, BuildingOffice, MagnifyingGlass, Download, FunnelSimple, X, CaretDown } from '@phosphor-icons/react'
 
 const REGION_NAMES = {
   'AuRA': 'Auvergne-Rhône-Alpes',
@@ -33,6 +33,7 @@ export default function FilterPanel({ filters, onFilterChange, onExport, onClear
   const [communes, setCommunes] = React.useState([])
   const [regions, setRegions] = React.useState([])
   const [loadingLocations, setLoadingLocations] = React.useState(false)
+  const [showCommunes, setShowCommunes] = React.useState(false)
 
   React.useEffect(() => {
     fetchRegions()
@@ -177,15 +178,43 @@ export default function FilterPanel({ filters, onFilterChange, onExport, onClear
             <MagnifyingGlass className="w-4 h-4 text-muted-foreground" />
             Ville
           </label>
-          <input
-            type="text"
-            placeholder="Rechercher une ville..."
-            value={filters.commune}
-            onChange={(e) => updateFilter('commune', e.target.value)}
-            list="communes-list"
-            disabled={loadingLocations || !filters.departement}
-            className="input"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Rechercher une ville..."
+              value={filters.commune}
+              onChange={(e) => updateFilter('commune', e.target.value)}
+              onFocus={() => setShowCommunes(true)}
+              list="communes-list"
+              disabled={loadingLocations || !filters.departement}
+              className="input pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowCommunes(!showCommunes)}
+              disabled={loadingLocations || !filters.departement}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30"
+            >
+              <CaretDown className="w-4 h-4" />
+            </button>
+            {showCommunes && communes.length > 0 && (
+              <div className="absolute z-20 left-0 right-0 top-full mt-1 max-h-60 overflow-y-auto bg-card border border-border rounded-xl shadow-elevation-2 animate-scale-in">
+                {communes.map(c => (
+                  <button
+                    key={c}
+                    type="button"
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 first:rounded-t-xl last:rounded-b-xl"
+                    onClick={() => {
+                      updateFilter('commune', c)
+                      setShowCommunes(false)
+                    }}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <datalist id="communes-list">
             {communes.map(c => <option key={c} value={c} />)}
           </datalist>

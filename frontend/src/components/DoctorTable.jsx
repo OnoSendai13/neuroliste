@@ -1,5 +1,5 @@
 import React from 'react'
-import { CaretUp, CaretDown, EnvelopeSimple, Phone, MapPin, BuildingOffice } from '@phosphor-icons/react'
+import { CaretUp, CaretDown, EnvelopeSimple, Phone, MapPin, BuildingOffice, MagnifyingGlass, X } from '@phosphor-icons/react'
 
 const MODE_LABELS = {
   'L': 'Cabinet',
@@ -16,6 +16,8 @@ const MODE_BADGES = {
 }
 
 export default function DoctorTable({ doctors, total, loading, sortField, sortDir, onSort }) {
+  const [selectedPhone, setSelectedPhone] = React.useState(null)
+  
   const handleSort = (field) => {
     onSort?.(field)
   }
@@ -133,7 +135,16 @@ export default function DoctorTable({ doctors, total, loading, sortField, sortDi
                         {doc.nom?.charAt(0) || '?'}
                       </div>
                       <div>
-                        <div className="font-medium">{doc.nom}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{doc.nom}</span>
+                          <button
+                            onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(doc.nom + ' ' + doc.prenom + ' neurologue')}`, '_blank', 'noopener,noreferrer')}
+                            className="btn btn-ghost btn-xs p-1 h-6 w-6"
+                            title="Rechercher ce praticien sur le web"
+                          >
+                            <MagnifyingGlass className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                         <div className="text-xs text-muted-foreground">RPPS: {doc.numero_rpps || '-'}</div>
                       </div>
                     </div>
@@ -167,9 +178,13 @@ export default function DoctorTable({ doctors, total, loading, sortField, sortDi
                         </a>
                       )}
                       {doc.tel && (
-                        <a href={`tel:${doc.tel}`} className="btn btn-ghost btn-sm">
+                        <button
+                          onClick={() => setSelectedPhone(doc.tel)}
+                          className="btn btn-ghost btn-sm"
+                          title="Afficher le numéro"
+                        >
                           <Phone className="w-4 h-4" />
-                        </a>
+                        </button>
                       )}
                     </div>
                   </td>
@@ -179,6 +194,23 @@ export default function DoctorTable({ doctors, total, loading, sortField, sortDi
           </tbody>
         </table>
       </div>
+      
+      {selectedPhone && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setSelectedPhone(null)}>
+          <div className="glass-panel rounded-2xl p-6 max-w-sm w-full mx-4 animate-scale-in" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Numéro de téléphone</h3>
+              <button onClick={() => setSelectedPhone(null)} className="btn btn-ghost btn-sm p-1">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="text-2xl font-bold text-primary mb-4">{selectedPhone}</div>
+            <a href={`tel:${selectedPhone}`} className="btn btn-primary w-full">
+              Appeler
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
