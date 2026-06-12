@@ -178,6 +178,35 @@ Optionnel mais recommandé pour les utilisateurs non techniques.
 - `electron-updater` pour les mises à jour automatiques
 - Releases GitHub avec assets par plateforme
 
+### 5. Vérification automatique des données
+
+Les fichiers RPPS sur data.gouv.fr sont mis à jour mensuellement, mais la date exacte peut varier. Il ne faut donc pas hardcoder un jour fixe.
+
+**Mécanisme recommandé :**
+
+```
+Au lancement de l'app:
+├── 1. Récupérer les métadonnées des fichiers sur data.gouv.fr
+├── 2. Comparer les dates avec date_import en DB locale
+├── 3. Si les fichiers sources sont plus récents:
+│   ├── Afficher une notification: "Nouvelles données disponibles"
+│   └── Proposer un bouton: "Mettre à jour maintenant"
+└── 4. Si les dates sont identiques:
+    └── Aucun message, app utilisable normalement
+```
+
+**Implémentation :**
+- Endpoint backend `GET /api/check-updates` qui appelle l'API data.gouv.fr
+- Compare les dates des ressources avec `date_import` en DB
+- Retourne `{ update_available: boolean, source_date: string, local_date: string }`
+- Le frontend check au démarrage via `useEffect`
+- Notification discrète dans le header si MAJ disponible
+
+**Avantages :**
+- Pas besoin de connaître la date exacte de publication
+- L'utilisateur est notifié sans intervention manuelle
+- La MAJ reste volontaire (pas de téléchargement automatique surprise)
+
 ## Conclusion
 
 Electron est le choix le plus pragmatique pour une v1 :
