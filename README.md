@@ -1,6 +1,6 @@
 # Neuroliste - Annuaire des Neurologues Français
 
-Application web pour explorer et exporter les neurologues français depuis la base RPPS (Répertoire des Professionnels de Santé).
+Application web moderne pour explorer et exporter les neurologues français depuis la base RPPS (Répertoire des Professionnels de Santé).
 
 ## 🚀 Démarrage rapide
 
@@ -70,16 +70,22 @@ Les médecins sont identifiés comme neurologues si :
 
 ## 🎯 Fonctionnalités
 
-- 🔍 **Filtres géographiques hiérarchisés** : Région → Département → Ville
-  - La sélection d'une région filtre automatiquement les départements affichés
-  - Le dropdown département ne montre que les départements de la région sélectionnée
-- 💼 **Mode exercice** : Cabinet (L), Salarié (S), Mixte (B), Hospitalier (H)
+- 🔍 **Filtres géographiques flexibles** : Région et Département sont indépendants
+  - Filtrer par région uniquement
+  - Filtrer par département uniquement
+  - Combiner région + département si besoin
+  - La sélection d'une région filtre les départements affichés
+- 💼 **Mode exercice** : Cabinet (L), Salarié (S)
+  - Mixte et Hospitalier retirés car ne débouchent sur aucun résultat
 - 📊 **Statistiques interactives** : Camemberts et graphiques par région, département, mode d'exercice
   - Les graphiques se rafraîchissent automatiquement quand les filtres changent
   - Affichage du total filtré en temps réel
+- 📅 **Date du dernier import** : Affichée dans le header
 - 📥 **Export CSV** configuré avec filtres appliqués
-- 📱 **Interface responsive** React avec filtres intuitifs
-- 🔘 **Bouton "Load RPPS Data"** : Charge les données depuis l'interface admin (10-15 min)
+- 🌙 **Dark mode** : Toggle Clair / Sombre / Système
+- 🏥 **Numéro RPPS** : Affiché sous le nom dans le tableau
+- 📱 **Interface responsive** React avec design moderne
+- 🎨 **Design moderne** : Palette médicale teal, cartes, ombres, gradients subtils
 
 ## 🛠️ API Endpoints
 
@@ -92,6 +98,7 @@ GET /api/locations?region=NAQ
 
 # Statistiques pour graphiques (option: filtrer par région/département)
 GET /api/stats?region=NAQ
+# Réponse inclut: total, departements, modes, regions, types_etablissement, last_import
 
 # Export CSV avec filtres
 GET /api/export?region=NAQ&departement=33
@@ -112,15 +119,25 @@ neuroliste/
 │   ├── src/
 │   │   ├── App.jsx      # Composant principal
 │   │   ├── components/
-│   │   │   ├── Filters.jsx      # Filtres géographiques
-│   │   │   ├── StatsPanel.jsx   # Graphiques interactifs
-│   │   │   └── DoctorList.jsx   # Tableau des neurologues
-│   │   └── App.css
+│   │   │   ├── FilterPanel.jsx      # Filtres géographiques
+│   │   │   ├── StatsDashboard.jsx   # Graphiques interactifs (Recharts)
+│   │   │   ├── DoctorTable.jsx      # Tableau des neurologues
+│   │   │   ├── Pagination.jsx       # Pagination
+│   │   │   └── ThemeToggle.jsx      # Toggle dark mode
+│   │   └── index.css    # Design system Tailwind
 │   └── index.html
 ├── scripts/
 │   └── load_rpps.py     # Script de chargement des données
 └── docker-compose.yml
 ```
+
+## 🖥️ Application autonome (Electron)
+
+Voir [`STANDALONE_APP_PLAN.md`](./STANDALONE_APP_PLAN.md) pour le plan complet de transformation en application desktop autonome multiplateforme.
+
+**Stack recommandée :** Electron + FastAPI embarqué + SQLite
+
+**Effort estimé :** 5-7 jours
 
 ## 🌐 Déploiement web
 

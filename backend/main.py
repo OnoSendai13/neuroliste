@@ -211,12 +211,22 @@ def get_stats(
         total_query = total_query.filter(Neurologue.departement == departement)
     total = total_query.count()
     
+    # Get last extraction date
+    last_neurologue = db.query(Neurologue.date_extraction).filter(
+        Neurologue.date_extraction.is_not(None)
+    ).order_by(Neurologue.date_extraction.desc()).first()
+    last_import = db.query(Neurologue.date_import).filter(
+        Neurologue.date_import.is_not(None)
+    ).order_by(Neurologue.date_import.desc()).first()
+
     return {
         "total": total,
         "departements": [{"name": d[0], "value": d[1]} for d in dep_stats],
         "modes": [{"name": m[0] or "Autre", "value": m[1]} for m in mode_stats],
         "regions": [{"name": r[0] or "Inconnu", "value": r[1]} for r in region_stats],
-        "types_etablissement": [{"name": t[0] or "Inconnu", "value": t[1]} for t in type_stats]
+        "types_etablissement": [{"name": t[0] or "Inconnu", "value": t[1]} for t in type_stats],
+        "last_extraction": last_neurologue[0].isoformat() if last_neurologue and last_neurologue[0] else None,
+        "last_import": last_import[0].isoformat() if last_import and last_import[0] else None
     }
 
 @app.get("/api/export")
