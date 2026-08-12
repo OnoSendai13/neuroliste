@@ -53,7 +53,7 @@ npm run dev  # http://localhost:5173
 Les données sont téléchargées directement depuis data.gouv.fr :
 
 - **Personne activité** : `ps-libreacces-personne-activite.txt` (~803 MB)
-- **Diplômes** : `ps-libreacces-dipl-autexerc.txt` (~271 MB)  
+- **Diplômes** : `ps-libreacces-dipl-autexerc.txt` (~271 MB) 
 - **Savoir-faire** : `ps-libreacces-savoirfaire.txt` (~51 MB)
 
 ### Filtrage Neurologues
@@ -86,6 +86,7 @@ Les médecins sont identifiés comme neurologues si :
 - 🏥 **Numéro RPPS** : Affiché sous le nom dans le tableau
 - 📱 **Interface responsive** React avec design moderne
 - 🎨 **Design moderne** : Palette médicale teal, cartes, ombres, gradients subtils
+- ✅ **Corrections d'adresses** : 524 adresses manquantes enrichies via recherche externe (duckduckgo)
 
 ## 🛠️ API Endpoints
 
@@ -177,7 +178,7 @@ services:
     restart: unless-stopped
     expose:
       - "8000"  # Port interne uniquement
-    
+   
   frontend:
     build: ./frontend
     command: ["npm", "run", "build"]

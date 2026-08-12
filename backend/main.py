@@ -235,6 +235,8 @@ def export_csv(
     departement: str = Query(None),
     commune: str = Query(None),
     mode_exercice: str = Query(None),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(1000, ge=1, le=100000),
     db: Session = Depends(get_db)
 ):
     query = db.query(Neurologue)
@@ -250,6 +252,8 @@ def export_csv(
         mode_map = {'L': 'Lib,indép,artis,com', 'S': 'Salarié', 'H': 'Hospitalier', 'B': 'Mixte'}
         mode_label = mode_map.get(mode_exercice, mode_exercice)
         query = query.filter(Neurologue.mode_exercice == mode_label)
+    
+    query = query.offset(skip).limit(limit)
     
     def generate_csv():
         output = io.StringIO()
@@ -288,20 +292,48 @@ def export_csv(
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+def _ensure_mount_g(max_wait: int = 15) -> str | None:
+    """Retry mounting G: if it disappeared after a hot-plug. Returns mount path or None."""
+    import subprocess
+    mount_path = "/mnt/g"
+    if os.path.ismount(mount_path) and os.path.exists(os.path.join(mount_path, "Neuro-liste")):
+        return mount_path
+    # WSL2 hot-plug: the mount point becomes a stale dir; try to remount.
+    # Find the physical drive backing G:
+    for disk in range(10):
+        device = f"/dev/sd{chr(ord('a') + disk)}"
+        if not os.path.exists(device):
+            continue
+        # Attempt a fresh mount — skip if already mounted
+        try:
+            subprocess.run(["mount", device, mount_path], capture_output=True, timeout=5)
+            if os.path.exists(os.path.join(mount_path, "Neuro-liste")):
+                return mount_path
+        except Exception:
+            continue
+    return None
+
+
 @app.post("/api/load-data")
 async def load_data():
     """Load RPPS neurologue data from data.gouv.fr"""
+    import time
     import subprocess
-    import os
     try:
-        script_path = os.path.join(os.path.dirname(__file__), "..", "scripts", "load_rpps.py")
-        python_path = os.path.join(os.path.dirname(__file__), ".venv", "bin", "python")
-        if not os.path.exists(python_path):
-            python_path = "python3"
-        
+        # Inside container, script is at /app/scripts/load_rpps.py
+        script_path = "/app/scripts/load_rpps.py"
+        python_path = "python3"
+
+        # Check script exists in container
+        if not os.path.exists(script_path):
+            raise HTTPException(
+                status_code=503,
+                detail="Load script not found in container"
+            )
+
         result = subprocess.run(
             [python_path, script_path],
-            cwd=os.path.dirname(__file__),
+            cwd="/app",
             capture_output=True,
             text=True,
             timeout=1800
@@ -311,5 +343,7 @@ async def load_data():
         raise HTTPException(status_code=500, detail=result.stderr)
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=500, detail="Loading timed out")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

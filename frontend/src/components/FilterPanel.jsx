@@ -74,7 +74,7 @@ export default function FilterPanel({ filters, onFilterChange, onExport, onClear
 
     setLoadingLocations(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://host.docker.internal:50000'}/api/locations?departement=${dep}`)
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/locations?departement=${dep}`)
       const data = await res.json()
       setCommunes((data.departements?.[dep] || []).sort())
     } catch (e) {
