@@ -22,9 +22,11 @@ L'AppImage est autonome : backend FastAPI embarqué, SQLite bundlé, pas de Dock
 
 ```bash
 docker-compose up -d
-# Frontend: http://127.0.0.1:5173
-# API: http://127.0.0.1:50000
+# Frontend: http://127.0.0.1:5173  (nginx + React build)
+# API:      http://127.0.0.1:50000 (FastAPI direct)
 ```
+
+**Architecture** : `nginx` (port 80 → 5173) sert le build React statique et reverse-proxy `/api/*` vers le container `rpps-api:8000` (backend FastAPI). Le `docker-compose.yml` expose l'API directement sur 50000 pour accès direct si besoin.
 
 ### Mode web local (sans Docker)
 
