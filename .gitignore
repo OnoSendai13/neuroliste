@@ -1,21 +1,10 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.Python
-*.so
-.venv/
-env/
-venv/
-data/
-
-# Node.js
+dist-electron/
 node_modules/
-dist/
-*.log
-.npm
-
-# IDE
-.vscode/
-.idea/
+frontend/node_modules/
+backend/.venv/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+temp-icon-*.png
+/tmp/rpps_cache/
+backend/data/neurologues.db

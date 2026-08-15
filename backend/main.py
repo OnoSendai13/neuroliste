@@ -229,6 +229,63 @@ def get_stats(
         "last_import": last_import[0].isoformat() if last_import and last_import[0] else None
     }
 
+
+@app.get("/api/check-updates")
+def check_updates(db: Session = Depends(get_db)):
+    """Check if remote RPPS data is newer than local import."""
+    import requests
+    from datetime import datetime
+    
+    try:
+        # Get local last import date
+        last_import = db.query(Neurologue.date_import).filter(
+            Neurologue.date_import.is_not(None)
+        ).order_by(Neurologue.date_import.desc()).first()
+        local_import_date = last_import[0].date() if last_import and last_import[0] else None
+        
+        # Fetch remote dataset metadata from data.gouv.fr
+        # Using the CKAN API for the RPPS dataset
+        remote_last_modified = None
+        try:
+            # CKAN package_show for the RPPS dataset
+            resp = requests.get(
+                "https://www.data.gouv.fr/api/1/datasets/rpps",
+                timeout=10
+            )
+            if resp.ok:
+                data = resp.json()
+                # Look for the last modification date in resources
+                resources = data.get('resources', [])
+                for resource in resources:
+                    if 'neurologue' in resource.get('title', '').lower() or \
+                       'neurologue' in resource.get('description', '').lower() or \
+                       resource.get('format', '').lower() in ['csv', 'json']:
+                        last_mod = resource.get('last_modified')
+                        if last_mod:
+                            remote_last_modified = datetime.fromisoformat(last_mod.replace('Z', '+00:00')).date()
+                            break
+        except Exception as e:
+            print(f"Error fetching remote metadata: {e}")
+        
+        update_available = False
+        if local_import_date and remote_last_modified:
+            update_available = remote_last_modified > local_import_date
+        
+        return {
+            "local_import_date": local_import_date.isoformat() if local_import_date else None,
+            "remote_last_modified": remote_last_modified.isoformat() if remote_last_modified else None,
+            "update_available": update_available,
+            "current_version": "1.0.0"
+        }
+    except Exception as e:
+        return {
+            "local_import_date": None,
+            "remote_last_modified": None,
+            "update_available": False,
+            "error": str(e),
+            "current_version": "1.0.0"
+        }
+
 @app.get("/api/export")
 def export_csv(
     region: str = Query(None),

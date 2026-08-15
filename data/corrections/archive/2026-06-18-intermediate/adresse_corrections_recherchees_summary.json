@@ -1,0 +1,58 @@
+{
+  "total_rows": 5,
+  "by_confidence": {
+    "non_sure": 1,
+    "probable": 4
+  },
+  "by_provider": {
+    "duckduckgo": 5
+  },
+  "providers": [
+    "duckduckgo"
+  ],
+  "columns": [
+    "id_ppss",
+    "nom",
+    "prenom",
+    "code_mode_exercice",
+    "categorie_audit",
+    "adresse_current",
+    "code_postal_current",
+    "commune_current",
+    "departement_current",
+    "region_current",
+    "correction_type",
+    "suggested_adresse",
+    "suggested_code_postal",
+    "suggested_commune",
+    "suggested_departement",
+    "suggested_region",
+    "confidence",
+    "source",
+    "source_url",
+    "source_snippet",
+    "search_query",
+    "status",
+    "notes",
+    "confidence_recherche",
+    "score",
+    "search_status",
+    "search_provider",
+    "source_nom",
+    "source_adresse",
+    "source_code_postal",
+    "source_commune",
+    "source_departement",
+    "source_region",
+    "source_siren",
+    "source_activite",
+    "source_rank",
+    "source_match_reason"
+  ],
+  "guardrails": [
+    "Ce script lit le CSV candidat et écrit un nouveau CSV enrichi.",
+    "Aucune connexion SQLite n’est ouverte.",
+    "Aucune modification n’est appliquée dans neurologues.db.",
+    "Les suggestions certaines/probables restent à valider avant correction externe."
+  ]
+}

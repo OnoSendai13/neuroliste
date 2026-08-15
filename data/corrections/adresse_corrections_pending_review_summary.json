@@ -1,0 +1,14 @@
+{
+  "main_rows": 496,
+  "extra_rows": 29,
+  "merged_rows": 525,
+  "duplicates_skipped": 0,
+  "pending_review": 525,
+  "apply_allowed_false": 525,
+  "with_address_new": 523,
+  "with_departement_new": 525,
+  "with_region_new": 516,
+  "source_counts": {
+    "duckduckgo": 525
+  }
+}

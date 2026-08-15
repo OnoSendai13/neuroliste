@@ -1,0 +1,67 @@
+nohup: ignoring input
+Step 1/3: Loading diplômes to identify neurologues...
+Downloading https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260610-120547/ps-libreacces-dipl-autexerc.txt...
+Found 3678 doctors with Neurologie diploma
+Step 2/3: Loading savoir-faire...
+Downloading https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260610-120956/ps-libreacces-savoirfaire.txt...
+Found 4095 doctors with Neurologie savoir-faire
+Neurologues with both diplome and savoir-faire: 3540
+Step 3/3: Loading personne activité...
+Downloading https://static.data.gouv.fr/resources/annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-intervenant-dans-le-systeme-de-sante-rpps/20260610-120843/ps-libreacces-personne-activite.txt...
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/response.py", line 894, in _error_catcher
+    yield
+  File "/usr/lib/python3/dist-packages/urllib3/response.py", line 1286, in read_chunked
+    chunk = self._handle_chunk(amt)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/urllib3/response.py", line 1238, in _handle_chunk
+    self._fp._safe_read(2)  # type: ignore[union-attr] # Toss the CRLF at the end of the chunk.
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 650, in _safe_read
+    raise IncompleteRead(data, amt - len(data))
+http.client.IncompleteRead: IncompleteRead(0 bytes read, 2 more expected)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 816, in generate
+    yield from self.raw.stream(chunk_size, decode_content=True)
+  File "/usr/lib/python3/dist-packages/urllib3/response.py", line 1139, in stream
+    yield from self.read_chunked(amt, decode_content=decode_content)
+  File "/usr/lib/python3/dist-packages/urllib3/response.py", line 1271, in read_chunked
+    with self._error_catcher():
+  File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/usr/lib/python3/dist-packages/urllib3/response.py", line 911, in _error_catcher
+    raise ProtocolError(f"Connection broken: {e!r}", e) from e
+urllib3.exceptions.ProtocolError: ('Connection broken: IncompleteRead(0 bytes read, 2 more expected)', IncompleteRead(0 bytes read, 2 more expected))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/g/Neuro-liste/rpps-neuro-app/scripts/load_rpps.py", line 162, in <module>
+    region = DEPT_TO_REGION.get(departement, None) if departement else None
+^^^^^^^^^^^^^^^^^^
+  File "/mnt/g/Neuro-liste/rpps-neuro-app/scripts/load_rpps.py", line 82, in load_neurologues
+    id_ppss = parts[1]  # Id_PP is column 1
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/g/Neuro-liste/rpps-neuro-app/scripts/load_rpps.py", line 28, in download_file
+    urls = {}
+       ^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 747, in send
+    r.content
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 899, in content
+    self._content = b"".join(self.iter_content(CONTENT_CHUNK_SIZE)) or b""
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 818, in generate
+    raise ChunkedEncodingError(e)
+requests.exceptions.ChunkedEncodingError: ('Connection broken: IncompleteRead(0 bytes read, 2 more expected)', IncompleteRead(0 bytes read, 2 more expected))

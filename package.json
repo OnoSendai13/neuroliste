@@ -1,0 +1,88 @@
+{
+  "name": "rpps-neuro-app",
+  "version": "1.0.0",
+  "description": "Application web moderne pour explorer et exporter les neurologues français depuis la base RPPS (Répertoire des Professionnels de Santé).",
+  "main": "electron/main.js",
+  "scripts": {
+    "electron:dev": "concurrently -k \"cross-env NODE_ENV=development vite --port 5173\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron electron/main.js\"",
+    "electron:build": "cd frontend && npm run build && cd .. && electron-builder",
+    "electron:preview": "cd frontend && npm run build && cd .. && electron electron/main.js",
+    "migrate": "node electron/migrations.js",
+    "migrate:rollback": "node electron/migrations.js rollback",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OnoSendai13/neuroliste.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/OnoSendai13/neuroliste/issues"
+  },
+  "homepage": "https://github.com/OnoSendai13/neuroliste#readme",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
+    "better-sqlite3": "^11.10.0",
+    "concurrently": "^10.0.4",
+    "cross-env": "^7.0.3",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
+    "electron-updater": "^6.1.7",
+    "icns": "^0.1.0",
+    "png2icons": "^2.0.1",
+    "sharp": "^0.35.3",
+    "vite": "^8.2.1",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "com.neuroliste.rpps",
+    "productName": "Neuroliste",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*",
+      "backend/**/*",
+      "!backend/.venv",
+      "!backend/__pycache__",
+      "!backend/data"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!.venv/**",
+          "!__pycache__/**"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "frontend/public/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "frontend/public/icon.iconset",
+      "category": "public.app-category.medical"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "frontend/public/icon.png",
+      "category": "Science"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "OnoSendai13",
+      "repo": "neuroliste"
+    }
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true
+  }
+}

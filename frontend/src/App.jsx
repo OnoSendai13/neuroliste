@@ -1,10 +1,11 @@
 import React from 'react'
-import { Brain, Database, ArrowsClockwise, Eye, EyeSlash, Pulse, Users, MapPin, ChartBar, Download } from '@phosphor-icons/react'
+import { Brain, Database, ArrowsClockwise, Eye, EyeSlash, Pulse, Users, MapPin, ChartBar, Download, WarningCircle, CheckCircle, Upload, Gear } from '@phosphor-icons/react'
 import FilterPanel from './components/FilterPanel'
 import DoctorTable from './components/DoctorTable'
 import Pagination from './components/Pagination'
 import StatsDashboard from './components/StatsDashboard'
 import ThemeToggle from './components/ThemeToggle'
+import CorrectionsPanel from './components/CorrectionsPanel'
 import './index.css'
 
 function App() {
@@ -292,6 +293,9 @@ function App() {
               onPageChange={fetchDoctors}
             />
           </section>
+
+          <CorrectionsPanel apiUrl={apiUrl} />
+
         </main>
 
         {/* Footer */}

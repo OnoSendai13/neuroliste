@@ -1,0 +1,449 @@
+{
+  "total_non_sure": 175,
+  "primary_reason_counts": {
+    "pas_adresse_extraite": 175
+  },
+  "reason_combo_counts": {
+    "pas_adresse_extraite;localite_absente;annuaire_medical": 79,
+    "pas_adresse_extraite;localite_absente;nom_partiel;annuaire_medical": 6,
+    "pas_adresse_extraite;localite_absente;score_faible;annuaire_medical": 1,
+    "pas_adresse_extraite;localite_absente;score_faible;nom_partiel;annuaire_medical": 5,
+    "pas_adresse_extraite;localite_absente;score_faible;nom_partiel;source_etrangere_ou_hors_france;source_non_referencee": 1,
+    "pas_adresse_extraite;localite_absente;score_faible;nom_partiel;source_non_referencee": 6,
+    "pas_adresse_extraite;localite_absente;score_faible;source_non_referencee": 6,
+    "pas_adresse_extraite;localite_absente;source_etrangere_ou_hors_france;source_non_referencee": 11,
+    "pas_adresse_extraite;localite_absente;source_non_referencee": 60
+  },
+  "by_audit_category": {
+    "liberal_sans_departement": 33,
+    "mode_vide_adresse_departement_vides": 106,
+    "salarie_adresse_vide_departement_present": 1,
+    "salarie_sans_departement": 35
+  },
+  "by_mode": {
+    "L": 33,
+    "S": 36,
+    "vide": 106
+  },
+  "by_score": {
+    "23": 1,
+    "35": 4,
+    "40": 5,
+    "45": 1,
+    "47": 8,
+    "52": 2,
+    "55": 154
+  },
+  "top_domains": {
+    "agenda.direct": 6,
+    "cnemj.fr": 1,
+    "fr.linkedin.com": 4,
+    "fr.wikipedia.org": 2,
+    "monsuivimedical.fr": 11,
+    "sos-tel-medecin.fr": 2,
+    "supermedecin.fr": 15,
+    "www.aphp.fr": 4,
+    "www.chl.lu": 1,
+    "www.chu-montpellier.fr": 6,
+    "www.doctolib.fr": 7,
+    "www.doctoome.com": 10,
+    "www.doctovac.com": 1,
+    "www.mablouseblanche.fr": 49,
+    "www.maiia.com": 2,
+    "www.medecinbelgique.com": 2,
+    "www.medecinfrance.com": 17,
+    "www.mediculmeu.com": 3,
+    "www.medisite.fr": 1,
+    "www.reco-doc.com": 2
+  },
+  "examples_by_reason_combo": {
+    "pas_adresse_extraite;localite_absente;annuaire_medical": [
+      {
+        "id_ppss": "10100383040",
+        "nom": "ABBOUD",
+        "prenom": "SHERINE",
+        "score": "55",
+        "source_url": "https://monsuivimedical.fr/praticien/neurologue-sherine-abboud",
+        "source_nom": "Docteur ABBOUD SHERINE — Neurologue à | MonSuiviMédical",
+        "suggested_adresse": "",
+        "source_snippet": "Docteur ABBOUD SHERINE, neurologue à . Trouvez ses coordonnées, localisation et confrères à proximité sur MonSuiviMédical."
+      },
+      {
+        "id_ppss": "10001896512",
+        "nom": "BACRI-NADIM",
+        "prenom": "DANIELE",
+        "score": "55",
+        "source_url": "https://www.mablouseblanche.fr/pro/A10001896512/docteur-bacri-nadim-daniele-neurologie",
+        "source_nom": "Prendre RDV : Dr Daniele BACRI-NADIM, Neurologue à",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez rendez-vous avec Dr Daniele BACRI-NADIM, Neurologue à en ligne. Adresse et Téléphone : ---"
+      },
+      {
+        "id_ppss": "10003850772",
+        "nom": "BASTARD",
+        "prenom": "JEAN",
+        "score": "55",
+        "source_url": "https://www.medecinfrance.com/medecin/medecin-bastard-jean-83085.htm",
+        "source_nom": "Docteur BASTARD JEAN Neurologue à MONT DE MARSAN - Médecin en France",
+        "suggested_adresse": "",
+        "source_snippet": "Découvrez tout ce que vous devez savoir sur le docteur BASTARD JEAN, ses spécialités, coordonnées, horaires de travail, recommandations des patients..."
+      },
+      {
+        "id_ppss": "10003271169",
+        "nom": "BEDOUCHA",
+        "prenom": "PIERRE",
+        "score": "55",
+        "source_url": "https://www.mablouseblanche.fr/pro/A10003271169/docteur-bedoucha-pierre-neurologie",
+        "source_nom": "PRENEZ RDV : Dr Pierre BEDOUCHA, Neurologue à - Mablouseblanche",
+        "suggested_adresse": "",
+        "source_snippet": "Présentation : Neurologue Dr Pierre BEDOUCHA (Neurologue) exerce son activité à 1 adresse : - , La neurologie est une spécialité médicale centrée sur l'étude et le traitement des pathologies et affections pouvant toucher le système nerveux central constitué du cerveau et de la moelle épinière ou le système nerveux périphérique constitué de racines et des nerfs."
+      },
+      {
+        "id_ppss": "10001656973",
+        "nom": "BELLANCE",
+        "prenom": "Remi",
+        "score": "55",
+        "source_url": "https://www.mablouseblanche.fr/pro/A10001656973/docteur-bellance-remi-neurologie",
+        "source_nom": "Prendre RDV : Dr Remi BELLANCE, Neurologue à - Mablouseblanche",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez rendez-vous avec Dr Remi BELLANCE, Neurologue à en ligne. Adresse et Téléphone : ---"
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;source_etrangere_ou_hors_france;source_non_referencee": [
+      {
+        "id_ppss": "10101035607",
+        "nom": "AMROM",
+        "prenom": "DINA",
+        "score": "55",
+        "source_url": "https://www.chl.lu/fr/docteur-amrom-dina",
+        "source_nom": "Docteur Dina Amrom - CHL",
+        "suggested_adresse": "",
+        "source_snippet": "Intérêts particuliers : Troubles du développement Troubles des mouvements Malformations cérébrales Epilepsie Neurogénétique Recherche clinique Auteur et coauteur de publications scientifiques dont plusieurs ont un grand impact, et de nombreuses communications scientifiques par affiches et orales dans des journées et congrès nationaux et internationaux."
+      },
+      {
+        "id_ppss": "10004042197",
+        "nom": "HUBER",
+        "prenom": "FRANK",
+        "score": "55",
+        "source_url": "https://www.editus.lu/fr/huber-frank-dr-ettelbruck-1591569",
+        "source_nom": "Huber Frank (Dr) - Médecin spécialiste en : Neurologie Ettelbruck",
+        "suggested_adresse": "",
+        "source_snippet": "Huber Frank (Dr) à Ettelbruck, toutes les informations pratiques sur Huber Frank (Dr) : heures d'ouvertures, téléphone, adresse. Toutes les activités de Huber Frank (Dr) : Médecin spécialiste en : Neurologie."
+      },
+      {
+        "id_ppss": "10005192264",
+        "nom": "KAZADI",
+        "prenom": "Annabelle",
+        "score": "55",
+        "source_url": "https://www.medecinbelgique.com/medecin/medecin-kazadi-annabelle-40212.htm",
+        "source_nom": "Docteur KAZADI Annabelle Neurologue à Bruxelles - Médecin en Belgique",
+        "suggested_adresse": "",
+        "source_snippet": "À propos du Dr KAZADI Annabelle Plus d'informations à propos du docteur. Médecin spécialiste en neurologie Spécialités Neurologue"
+      },
+      {
+        "id_ppss": "10102183331",
+        "nom": "MORANDO",
+        "prenom": "Chloé",
+        "score": "55",
+        "source_url": "https://supermedecin.fr/medecin/morando-chloe",
+        "source_nom": "Morando Chloé — Neurologie (rang 854, 2020) · Supermédecin",
+        "suggested_adresse": "",
+        "source_snippet": "Morando Chloé, affecté(e) en Neurologie à Bordeaux en 2020 (rang 854 ECN — 32/125 en Neurologie)."
+      },
+      {
+        "id_ppss": "10002427861",
+        "nom": "MUTSCHLER",
+        "prenom": "Véronique",
+        "score": "55",
+        "source_url": "https://www.horairesdouverture24.fr/filiale/Strasbourg-Dr%20V%E9ronique%20Mutschler%20-%20Neurologue-5118578U.html",
+        "source_nom": "Dr Véronique Mutschler - Neurologue à Strasbourg",
+        "suggested_adresse": "",
+        "source_snippet": "Actuellement ouvert? Horaires d'ouverture de „Dr Véronique Mutschler - Neurologue\" à Strasbourg Horaires d'ouverture Numéro de téléphone Données de contact Adresse ★ Avis. Voir maintenant !"
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;source_non_referencee": [
+      {
+        "id_ppss": "10000351402",
+        "nom": "BAKCHINE",
+        "prenom": "Serge",
+        "score": "55",
+        "source_url": "https://www.medisite.fr/expert-docteur-serge-bakchine",
+        "source_nom": "Docteur Serge Bakchine - Medisite",
+        "suggested_adresse": "",
+        "source_snippet": "Docteur Serge Bakchine , expert Neurologue (chef du département du service de neurologie) pour Medisite.fr, valide les contenus de nos journalistes"
+      },
+      {
+        "id_ppss": "10004990825",
+        "nom": "FELTEN",
+        "prenom": "DOMINIQUE",
+        "score": "55",
+        "source_url": "https://www.frcneurodon.org/acteurs/dominique-felten/",
+        "source_nom": "Dominique FELTEN - Fondation pour la Recherche sur le Cerveau",
+        "suggested_adresse": "",
+        "source_snippet": "Dominique FELTEN, administrateur. Il est actuellement Vice-Président de la FFRE. Médecin neurologue de formation, chef de service hospitalier puis directeur d'hôpital, il a notamment dirigé l'hôpital militaire du Val-de-Grâce. Aujourd'hui, il est directeur de l'Institut de recherche biomédicale des armées, à Brétigny sur Orge."
+      },
+      {
+        "id_ppss": "10002985611",
+        "nom": "FOUILLET",
+        "prenom": "PIERRE",
+        "score": "55",
+        "source_url": "https://sos-tel-medecin.fr/medecin/fouillet-pierre-grenoble-1",
+        "source_nom": "Fouillet Pierre médecin à Grenoble, téléphone, adresse, horaires",
+        "suggested_adresse": "",
+        "source_snippet": "Fouillet Pierre à Grenoble, médecin,docteur, horaires d'ouverture, téléphone, avis, plan d'accès. Toutes les infos et recommandations sur Fouillet Pierre 6 Bis Avenue Jean Perrot"
+      },
+      {
+        "id_ppss": "10000210509",
+        "nom": "LYON CAEN",
+        "prenom": "OLIVIER",
+        "score": "55",
+        "source_url": "https://fr.wikipedia.org/wiki/Olivier_Lyon-Caen",
+        "source_nom": "Olivier Lyon-Caen — Wikipédia",
+        "suggested_adresse": "",
+        "source_snippet": "Olivier Lyon-Caen, né le 5 janvier 1947 dans le 16e arrondissement de Paris, est un neurologue et un universitaire français."
+      },
+      {
+        "id_ppss": "10000402668",
+        "nom": "MARION",
+        "prenom": "Marie-Helene",
+        "score": "55",
+        "source_url": "https://www.meditsimple.com/fr/practitioners/dr-marie-helene-marion/6307",
+        "source_nom": "Dr Marie-Helene Marion, Neurologie - MEDitSIMPLE",
+        "suggested_adresse": "",
+        "source_snippet": "Découvrez Dr Marie-Helene Marion. Consultez son profil pour en savoir plus sur ses qualifications, voir les avis de ses patients et prendre rendez-vous en ligne facilement."
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;score_faible;nom_partiel;source_non_referencee": [
+      {
+        "id_ppss": "10002338399",
+        "nom": "BARROCHE",
+        "prenom": "GERARD",
+        "score": "35",
+        "source_url": "https://fr.linkedin.com/in/gérard-barroche-6a496b64",
+        "source_nom": "Gérard Barroche - Professeur émérite de neurologie | LinkedIn",
+        "suggested_adresse": "",
+        "source_snippet": "Professeur émérite de neurologie · Formation : Assistance publique Hôpitaux de Paris · Lieu : Nancy · 90 relations sur LinkedIn. Consultez le profil de Gérard Barroche sur LinkedIn, une communauté professionnelle d'un milliard de membres."
+      },
+      {
+        "id_ppss": "10002862315",
+        "nom": "DEMONET",
+        "prenom": "JEAN-FRANCOIS",
+        "score": "35",
+        "source_url": "https://cnemj.fr/experts/demonet-jean-francois/",
+        "source_nom": "DEMONET Jean-François - Compagnie Nationale des Experts Médecins de Justice",
+        "suggested_adresse": "",
+        "source_snippet": "Neurologie F.1.21. Ophtalmologie médicale F.1.22. Oto-rhino-laryngologie (ORL) médicale F.1.24. Pédiatrie F.1.26. Pneumologie F.1.27. Rhumatologie F.1.3. Anesthésiologie et réanimation F.1.5. Cancérologie - Médico-chirurgicale et traitements adjuvants F.1.7. Dermatologie - Vénérologie F.1.8. Endocrinologie et maladies métaboliques ..."
+      },
+      {
+        "id_ppss": "10002991163",
+        "nom": "HUCK",
+        "prenom": "Noëlle",
+        "score": "47",
+        "source_url": "https://autour-de-moi.pro/fiche/dr-huck-noelle-marie-jacqueline/",
+        "source_nom": "Dr Huck Noelle Marie Jacqueline - Autour de moi",
+        "suggested_adresse": "",
+        "source_snippet": "Retrouvez toutes les informations sur Dr Huck Noelle Marie Jacqueline, votre Neurologue, situé 4 Rue Vicat, 38000 Grenoble. Sur cette page, vous accédez aux photos, à l'adresse complète, aux horaires d'ouverture, au numéro de téléphone ainsi qu'aux avis des clients. Un formulaire de contact est également disponible pour joindre l'établissement facilement."
+      },
+      {
+        "id_ppss": "10003010781",
+        "nom": "LAPRAS",
+        "prenom": "Jérôme",
+        "score": "47",
+        "source_url": "https://neurologue.autour-de-moi.com/lapras-jerome-1497115.html",
+        "source_nom": "Lapras Jerôme à Saint-Étienne | 10 Avis",
+        "suggested_adresse": "",
+        "source_snippet": "Voici toutes les informations sur le Neurologue Lapras Jerôme qui se trouve au 4 Rue Mi-Carême, 42000 Saint-Étienne (42). Sur cette fiche vous trouverez les photos, l'adresse, les horaires d'ouverture, le numéro de téléphone et les avis clients."
+      },
+      {
+        "id_ppss": "10002475027",
+        "nom": "SEVRIN-MATHIEU",
+        "prenom": "CLAIRE",
+        "score": "47",
+        "source_url": "https://www.allo-medecins.fr/Besancon-25000/neurologue/neurologue_Sevrin-Claire.html",
+        "source_nom": "Sevrin Claire Neurologue à Besançon - allo-medecins.fr",
+        "suggested_adresse": "",
+        "source_snippet": "Sevrin Claire, Neurologue sur Besançon (25000), Doubs, France, sur Allo-Medecins, l'annuaire des médecins et de la santé"
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;score_faible;nom_partiel;annuaire_medical": [
+      {
+        "id_ppss": "10002143625",
+        "nom": "CHABOUD-AUDRY",
+        "prenom": "DOMINIQUE",
+        "score": "47",
+        "source_url": "https://www.doctovac.com/neurologue/dijon/audry-dominique/785340",
+        "source_nom": "Dr Audry Dominique, neurologue à Dijon 21000 - doctovac.com",
+        "suggested_adresse": "",
+        "source_snippet": "Le docteur Audry Dominique est neurologue à Dijon : rendez-vous pour une consultation de neurologie à son cabinet rd-pt nation Dijon 21000."
+      },
+      {
+        "id_ppss": "10003762308",
+        "nom": "ESCAILLAS",
+        "prenom": "JEAN-PIERRE",
+        "score": "47",
+        "source_url": "https://agenda.direct/rendez-vous/jean-pierre-escaillas/montlucon-03109/neurologie/10003762308",
+        "source_nom": "Jean Pierre ESCAILLAS - Neurologie à Montluçon - RDV",
+        "suggested_adresse": "",
+        "source_snippet": "Le Docteur Jean Pierre Escaillas, Neurologie, vous souhaite la bienvenue dans son cabinet médical à Montluçon. Situé au 18 Avenue Du 8 Mai 1945 Montluçon 03109, le cabinet médical du Dr Jean Pierre Escaillas propose des disponibilités de rendez-vous médicaux pour vous recevoir. Le Docteur Jean Pierre Escaillas, Neurologie, pratique son activité médicale en région Auvergne rhone ..."
+      },
+      {
+        "id_ppss": "10002859311",
+        "nom": "ZEKRI-HURSTEL",
+        "prenom": "Regine",
+        "score": "47",
+        "source_url": "https://www.mablouseblanche.fr/pro/A10002859311/docteur-zekri-hurstel-regine-neurologie-toulouse",
+        "source_nom": "Prendre RDV : Dr Regine ZEKRI -HURSTEL, Neurologue à Toulouse",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez rendez-vous avec Dr Regine ZEKRI -HURSTEL, Neurologue à Toulouse en ligne. Adresse et Téléphone : 42 RUE DE LA POMME 31000 Toulouse"
+      },
+      {
+        "id_ppss": "10100093201",
+        "nom": "BOICU",
+        "prenom": "Maria-Florentina",
+        "score": "47",
+        "source_url": "https://www.mablouseblanche.fr/pro/A10100093201/docteur-boicu-maria-florentina-neurologie-montelimar",
+        "source_nom": "Prendre RDV : Dr Maria florentina BOICU, Neurologue à Montélimar",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez rendez-vous avec Dr Maria florentina BOICU, Neurologue à Montélimar en ligne. Adresse et Téléphone : Quartier BEAUSSERET 26216 Montélimar"
+      },
+      {
+        "id_ppss": "10102213450",
+        "nom": "GUÉRÉMY",
+        "prenom": "Alexandre",
+        "score": "47",
+        "source_url": "https://www.mablouseblanche.fr/pro/A10102273967/docteur-gueremy-alexandre-neurologie-poitiers",
+        "source_nom": "Prendre RDV : Dr Alexandre GUEREMY, Neurologue à Poitiers",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez rendez-vous avec Dr Alexandre GUEREMY, Neurologue à Poitiers en ligne. Adresse et Téléphone : 2 Rue DE LA MILETRIE 86021 Poitiers"
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;nom_partiel;annuaire_medical": [
+      {
+        "id_ppss": "10101498060",
+        "nom": "CLUSE",
+        "prenom": "Florent",
+        "score": "55",
+        "source_url": "https://www.doctolib.fr/neurologue/saint-maur-des-fosses/florent-thabuy",
+        "source_nom": "Dr Florent THABUY, Neurologue à Saint-Maur-des-Fossés - Doctolib",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez RDV en ligne avec Dr Florent THABUY: Neurologue, Conventionné secteur 2. Adresse : 63-65 Avenue de la République, 94100 Saint-Maur-des-Fossés."
+      },
+      {
+        "id_ppss": "10005164248",
+        "nom": "DEWISPELAERE",
+        "prenom": "François",
+        "score": "55",
+        "source_url": "https://www.doctolib.fr/neurologue/saint-paul-en-foret/francois-dewispelaere",
+        "source_nom": "Dr Francois Dewispelaere, Neurologue à Saint-Paul-en-Forêt - Doctolib",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez RDV en ligne avec Dr Francois Dewispelaere: Neurologue. Adresse : 436 Peymeyan, 83440 Saint-Paul-en-Forêt."
+      },
+      {
+        "id_ppss": "10107088998",
+        "nom": "GALLI",
+        "prenom": "Ophélie",
+        "score": "55",
+        "source_url": "https://www.doctolib.fr/neurologue/perigueux/paola-galli",
+        "source_nom": "Dr Paola GALLI, Neurologue à Périgueux : Prenez rendez ... - Doctolib",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez RDV en ligne avec Dr Paola GALLI: Neurologue, Conventionné secteur 2 avec OPTAM. Adresse : 26 Rue Paul Louis Courier, 24000 Périgueux."
+      },
+      {
+        "id_ppss": "10102032652",
+        "nom": "MÉHAULT",
+        "prenom": "Matthieu",
+        "score": "55",
+        "source_url": "https://www.doctolib.fr/neurologue/saint-martin-sur-le-pre/matthieu-mehault",
+        "source_nom": "Dr. Mehault Matthieu, Neurologue à Saint-Martin-sur-le-Pré - Doctolib",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez RDV avec Dr. Mehault Matthieu: Neurologue. Adresse : 16t Route de Louvois, 51520 Saint-Martin-sur-le-Pré."
+      },
+      {
+        "id_ppss": "10101395480",
+        "nom": "PÉLISSON",
+        "prenom": "Mélodie",
+        "score": "55",
+        "source_url": "https://www.doctolib.fr/neurologue/montbonnot-saint-martin/melodie-pelisson",
+        "source_nom": "Dr Mélodie Pelisson, Neurologue à Montbonnot-Saint-Martin - Doctolib",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez RDV en ligne avec Dr Mélodie Pelisson: Neurologue. Adresse : 100 Rue Jean Monnet, 38330 Montbonnot-Saint-Martin."
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;score_faible;source_non_referencee": [
+      {
+        "id_ppss": "10100844710",
+        "nom": "FAZEKAS",
+        "prenom": "FERENC",
+        "score": "40",
+        "source_url": "https://www.doklist.com/en/d25950/",
+        "source_nom": "Dr. Fazekas Ferenc Neurologist private practice Budapest, XIII ...",
+        "suggested_adresse": "",
+        "source_snippet": "Make an appointment for free, no fine print. Dr. Fazekas Ferenc, trusted reviews from real patients. Working hours and directions."
+      },
+      {
+        "id_ppss": "10102171567",
+        "nom": "GAUTHIER",
+        "prenom": "Léna",
+        "score": "40",
+        "source_url": "https://www.linkedin.com/pub/dir/Léna/Gauthier/fr-0-France",
+        "source_nom": "10+ \"Léna Gauthier\" profiles | LinkedIn",
+        "suggested_adresse": "",
+        "source_snippet": "View the profiles of professionals named \"Léna Gauthier\" on LinkedIn. There are 10+ professionals named \"Léna Gauthier\", who use LinkedIn to exchange information, ideas, and opportunities."
+      },
+      {
+        "id_ppss": "10004927256",
+        "nom": "HANNA",
+        "prenom": "GEORGES",
+        "score": "40",
+        "source_url": "https://www.medsynapse.app/doctors/dr-hanna-georges-69422",
+        "source_nom": "Dr. Hanna Georges, Neurologist - Book Appointment - MedSynapse",
+        "suggested_adresse": "",
+        "source_snippet": "Dr. Hanna Georges - Neurologist. Book online appointment, check email and contact number, years of experience, medical degrees, qualification and other hcps re"
+      },
+      {
+        "id_ppss": "10102197042",
+        "nom": "LOPEZ",
+        "prenom": "Marylou",
+        "score": "40",
+        "source_url": "http://petille.univ-poitiers.fr/notice/view/69684",
+        "source_nom": "Marylou Lopez - Facteurs prédictifs du vasospasme et de l'ischémie ...",
+        "suggested_adresse": "",
+        "source_snippet": "Thèse d'exercice Lopez Marylou Facteurs prédictifs du vasospasme et de l'ischémie cérébrale retardée post-hémorragie méningée anévrismale : Étude rétrospective monocentrique réalisée en neuro-réanimation du centre hospitalo-universitaire de Poitiers entre le 01/05/2021 et le 31/08/23 Français"
+      },
+      {
+        "id_ppss": "10100316263",
+        "nom": "MUNTEANU BARBIER",
+        "prenom": "Roxana-Oana",
+        "score": "40",
+        "source_url": "https://www.maquestionmedicale.fr/med-rdv/specialites/neurologie/inconnue/docteur-roxana-oana-munteanu-barbier.htm",
+        "source_nom": "Roxana-Oana MUNTEANU BARBIER - Médecin : medrdv med-rdv annuaire Médecin",
+        "suggested_adresse": "",
+        "source_snippet": "Important En cas d'urgence vitale, contactez le 15 ou rendez-vous aux urgences les plus proches. Sans médecin traitant, ou pour certaines situations (enfant, urgence non vitale), vous pouvez réaliser une téléconsultation via le bouton ci-dessous."
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;score_faible;nom_partiel;source_etrangere_ou_hors_france;source_non_referencee": [
+      {
+        "id_ppss": "10100311280",
+        "nom": "STRAUSS",
+        "prenom": "MELANIE",
+        "score": "35",
+        "source_url": "https://rosa.be/fr/hp/melanie-strauss/",
+        "source_nom": "MÉLANIE STRAUSS (Neurologue) : Prenez rendez-vous en ligne | Rosa",
+        "suggested_adresse": "",
+        "source_snippet": "Prenez rendez-vous en ligne avec MÉLANIE STRAUSS (Neurologue). Découvrez les disponibilités en quelques clics sur Rosa!"
+      }
+    ],
+    "pas_adresse_extraite;localite_absente;score_faible;annuaire_medical": [
+      {
+        "id_ppss": "10100559730",
+        "nom": "NOT",
+        "prenom": "Adeline",
+        "score": "23",
+        "source_url": "https://www.doctolib.fr/neurologue",
+        "source_nom": "Neurologue : Prenez rendez-vous en ligne | Doctolib",
+        "suggested_adresse": "",
+        "source_snippet": "Trouvez rapidement un neurologue près de chez vous ou un soignant proposant des actes de neurologie et prenez rendez-vous gratuitement en ligne en quelques clics"
+      }
+    ]
+  }
+}

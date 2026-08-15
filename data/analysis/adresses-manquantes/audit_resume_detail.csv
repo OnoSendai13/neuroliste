@@ -1,0 +1,7 @@
+﻿categorie,count,adresse_vide,departement_vide,mode_vide
+complet,2862,0,0,0
+mode_vide_adresse_departement_vides,486,486,486,486
+liberal_sans_departement,96,96,96,0
+salarie_sans_departement,69,69,69,0
+salarie_adresse_vide_departement_present,16,16,0,0
+liberal_adresse_vide_departement_present,11,11,0,0

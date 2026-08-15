@@ -1,0 +1,48 @@
+{
+  "source": "G:\\Neuro-liste\\rpps-neuro-app\\data\\analysis\\adresses-manquantes\\audit_adresses_vides.csv",
+  "total_rows": 3540,
+  "categories": [
+    {
+      "categorie": "complet",
+      "count": 2862,
+      "adresse_vide": 0,
+      "departement_vide": 0,
+      "mode_vide": 0
+    },
+    {
+      "categorie": "mode_vide_adresse_departement_vides",
+      "count": 486,
+      "adresse_vide": 486,
+      "departement_vide": 486,
+      "mode_vide": 486
+    },
+    {
+      "categorie": "liberal_sans_departement",
+      "count": 96,
+      "adresse_vide": 96,
+      "departement_vide": 96,
+      "mode_vide": 0
+    },
+    {
+      "categorie": "salarie_sans_departement",
+      "count": 69,
+      "adresse_vide": 69,
+      "departement_vide": 69,
+      "mode_vide": 0
+    },
+    {
+      "categorie": "salarie_adresse_vide_departement_present",
+      "count": 16,
+      "adresse_vide": 16,
+      "departement_vide": 0,
+      "mode_vide": 0
+    },
+    {
+      "categorie": "liberal_adresse_vide_departement_present",
+      "count": 11,
+      "adresse_vide": 11,
+      "departement_vide": 0,
+      "mode_vide": 0
+    }
+  ]
+}

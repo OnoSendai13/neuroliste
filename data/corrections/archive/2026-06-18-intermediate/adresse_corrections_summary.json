@@ -1,0 +1,30 @@
+{
+  "total_audit_rows": 3540,
+  "missing_address_rows": 678,
+  "missing_department_rows": 651,
+  "candidate_rows": 678,
+  "by_correction_type": {
+    "adresse_to_search": 678
+  },
+  "by_status": {
+    "to_verify": 678
+  },
+  "missing_rows_by_audit_category": {
+    "liberal_adresse_vide_departement_present": 11,
+    "liberal_sans_departement": 96,
+    "mode_vide_adresse_departement_vides": 486,
+    "salarie_adresse_vide_departement_present": 16,
+    "salarie_sans_departement": 69
+  },
+  "missing_rows_by_mode": {
+    "L": 107,
+    "S": 85,
+    "vide": 486
+  },
+  "guardrails": [
+    "Ce script lit uniquement le CSV d'audit.",
+    "Aucune connexion SQLite n'est ouverte.",
+    "Aucune correction n'est appliquée en base.",
+    "Les lignes code_mode_exercice/mode_exercice ne sont jamais proposées à la correction."
+  ]
+}
