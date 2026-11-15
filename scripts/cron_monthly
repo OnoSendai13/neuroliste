@@ -1,5 +1,11 @@
 # Monthly cron job for RPPS data update
-# Install with: crontab cron_monthly
-
+# Install with: crontab /path/to/rpps-neuro-app/scripts/cron_monthly
+#
 # Run on 6th of each month at 2:00 AM (after data.gouv.fr updates)
-0 2 6 * * cd /path/to/rpps-neuro-app && /bin/bash scripts/monthly_update.sh >> logs/monthly_update.log 2>&1
+# The script writes its own log to logs/monthly_update.log : no >> needed.
+#
+# On Windows, run it under Git Bash via the Windows Task Scheduler instead:
+#   Program   : C:\Program Files\Git\bin\bash.exe
+#   Arguments : -lc "cd /g/Neuro-liste/rpps-neuro-app && bash scripts/monthly_update.sh"
+#   Trigger   : day 6 of each month at 02:00
+0 2 6 * * cd /path/to/rpps-neuro-app && bash scripts/monthly_update.sh

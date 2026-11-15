@@ -8,3 +8,10 @@ backend/__pycache__/
 temp-icon-*.png
 /tmp/rpps_cache/
 backend/data/neurologues.db
+
+# Journal de la mise a jour mensuelle (genere a l'execution)
+logs/
+
+# Sauvegardes de la base de donnees
+*.db.bak-*
+
