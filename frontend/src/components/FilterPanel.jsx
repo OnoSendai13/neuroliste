@@ -17,9 +17,12 @@ const REGION_NAMES = {
   'Normandie': 'Normandie',
   'GP': 'Guadeloupe',
   'GF': 'Guyane',
-  'RE': 'Réunion',
+  'RE': 'La Réunion',
   'FP': 'Martinique',
-  'SM': 'Saint-Martin/Saint-Barth'
+  'SM': 'Saint-Martin/Saint-Barth',
+  'YT': 'Mayotte',
+  'SPM': 'Saint-Pierre-et-Miquelon',
+  'PF': 'Polynésie française'
 }
 
 const MODE_LABELS = {
@@ -35,6 +38,11 @@ export default function FilterPanel({ filters, onFilterChange, onExport, onClear
   const [loadingLocations, setLoadingLocations] = React.useState(false)
   const [showCommunes, setShowCommunes] = React.useState(false)
 
+  // Chemin relatif : le reverse-proxy route /api/ vers le backend.
+  // (l'app Electron packag ee servant le front en file://, elle cible le port 8000)
+  const apiUrl = import.meta.env.VITE_API_URL
+    || (window.location.protocol === 'file:' ? 'http://localhost:8000' : '')
+
   React.useEffect(() => {
     fetchRegions()
   }, [])
@@ -45,7 +53,7 @@ export default function FilterPanel({ filters, onFilterChange, onExport, onClear
 
   const fetchRegions = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/stats`)
+      const res = await fetch(`${apiUrl}/api/stats`)
       const data = await res.json()
       setRegions(data.regions?.map(r => r.name) || [])
     } catch (e) {
@@ -56,8 +64,8 @@ export default function FilterPanel({ filters, onFilterChange, onExport, onClear
   const fetchDepartements = async () => {
     try {
       const url = filters.region
-        ? `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/locations?region=${filters.region}`
-        : `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/locations`
+        ? `${apiUrl}/api/locations?region=${encodeURIComponent(filters.region)}`
+        : `${apiUrl}/api/locations`
       const res = await fetch(url)
       const data = await res.json()
       setDepartements(Object.keys(data.departements || {}).sort())
@@ -74,7 +82,7 @@ export default function FilterPanel({ filters, onFilterChange, onExport, onClear
 
     setLoadingLocations(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'}/api/locations?departement=${dep}`)
+      const res = await fetch(`${apiUrl}/api/locations?departement=${encodeURIComponent(dep)}`)
       const data = await res.json()
       setCommunes((data.departements?.[dep] || []).sort())
     } catch (e) {

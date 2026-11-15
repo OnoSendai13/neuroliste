@@ -47,7 +47,14 @@ function App() {
     }
   }, [theme])
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:50000'
+  // API en chemin relatif : le reverse-proxy (nginx) route /api/ vers le backend.
+  // Plus d'URL absolue en dur (localhost:50000), qui bloquait toute origine
+  // differente de 127.0.0.1:5173 (CORS) et rendait le menu region/departement
+  // vide selon la maniere dont la page etait ouverte.
+  // Exception : l'app Electron packag ee sert le front en file://, il n'y a
+  // alors pas de reverse-proxy -> on vise le backend qu'il lance sur le port 8000.
+  const apiUrl = import.meta.env.VITE_API_URL
+    || (window.location.protocol === 'file:' ? 'http://localhost:8000' : '')
 
   const fetchDoctors = async (page = 1) => {
     page = Math.max(1, page)

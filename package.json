@@ -4,7 +4,7 @@
   "description": "Application web moderne pour explorer et exporter les neurologues français depuis la base RPPS (Répertoire des Professionnels de Santé).",
   "main": "electron/main.js",
   "scripts": {
-    "electron:dev": "concurrently -k \"cross-env NODE_ENV=development vite --port 5173\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron electron/main.js\"",
+    "electron:dev": "concurrently -k \"cross-env NODE_ENV=development VITE_API_PROXY=http://127.0.0.1:8000 vite --port 5173\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron electron/main.js\"",
     "electron:build": "cd frontend && npm run build && cd .. && electron-builder",
     "electron:preview": "cd frontend && npm run build && cd .. && electron electron/main.js",
     "migrate": "node electron/migrations.js",

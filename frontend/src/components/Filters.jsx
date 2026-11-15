@@ -16,9 +16,12 @@ const REGION_NAMES = {
   'Normandie': 'Normandie',
   'GP': 'Guadeloupe',
   'GF': 'Guyane',
-  'RE': 'Réunion',
+  'RE': 'La Réunion',
   'FP': 'Martinique',
-  'SM': 'Saint-Martin/Saint-Barth'
+  'SM': 'Saint-Martin/Saint-Barth',
+  'YT': 'Mayotte',
+  'SPM': 'Saint-Pierre-et-Miquelon',
+  'PF': 'Polynésie française'
 }
 
 export default function Filters({ filters, onFilterChange, onExport }) {
