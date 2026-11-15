@@ -1,6 +1,14 @@
 import React from 'react'
 import { WarningCircle, CheckCircle, ArrowClockwise, Database, Eye, Download, Upload, Gear, ArrowsClockwise } from '@phosphor-icons/react'
 
+// Le panneau pilote le workflow de corrections d'adresses, qui passe par
+// l'IPC Electron (main.js) et les fichiers CSV du dossier data/corrections.
+// Dans l'application web (navigateur, conteneur) cette API n'existe pas :
+// il faut alors masquer le panneau plutot que d'afficher une erreur.
+const correctionsApi = () => (typeof window !== 'undefined' && window.electronAPI
+  ? window.electronAPI.corrections
+  : null)
+
 function CorrectionsPanel({ apiUrl }) {
   const [pendingEntries, setPendingEntries] = React.useState([])
   const [loading, setLoading] = React.useState(false)
@@ -14,7 +22,8 @@ function CorrectionsPanel({ apiUrl }) {
     setLoading(true)
     setError('')
     try {
-      const { corrections } = window.electronAPI
+      const corrections = correctionsApi()
+      if (!corrections) throw new Error('API Electron indisponible')
       const result = await corrections.listPending()
       if (result.error) {
         setError(result.error)
@@ -31,7 +40,8 @@ function CorrectionsPanel({ apiUrl }) {
 
   const promoteEntry = async (id_ppss) => {
     try {
-      const { corrections } = window.electronAPI
+      const corrections = correctionsApi()
+      if (!corrections) throw new Error('API Electron indisponible')
       const result = await corrections.promoteToConfirmed(id_ppss)
       if (result.success) {
         setSuccess(`Entrée ${id_ppss} promue à confirmed`)
@@ -49,7 +59,8 @@ function CorrectionsPanel({ apiUrl }) {
     setError('')
     setSuccess('')
     try {
-      const { corrections } = window.electronAPI
+      const corrections = correctionsApi()
+      if (!corrections) throw new Error('API Electron indisponible')
       const result = await corrections.applyConfirmed()
       if (result.success) {
         setSuccess('Corrections appliquées avec succès')
@@ -68,7 +79,8 @@ function CorrectionsPanel({ apiUrl }) {
   const checkUpdates = async () => {
     setCheckingUpdates(true)
     try {
-      const { corrections } = window.electronAPI
+      const corrections = correctionsApi()
+      if (!corrections) throw new Error('API Electron indisponible')
       const result = await corrections.checkUpdates()
       setUpdates(result)
     } catch (e) {
@@ -83,7 +95,8 @@ function CorrectionsPanel({ apiUrl }) {
     setError('')
     setSuccess('')
     try {
-      const { corrections } = window.electronAPI
+      const corrections = correctionsApi()
+      if (!corrections) throw new Error('API Electron indisponible')
       const result = await corrections.triggerLoadData()
       if (result.status === 'success') {
         setSuccess('Données RPPS rechargées')
@@ -98,12 +111,20 @@ function CorrectionsPanel({ apiUrl }) {
   }
 
   React.useEffect(() => {
+    if (!correctionsApi()) return
     fetchPending()
     checkUpdates()
   }, [])
 
   const confirmedCount = pendingEntries.filter(e => e.status === 'confirmed' && e.apply_allowed === 'true').length
   const pendingCount = pendingEntries.filter(e => e.status === 'pending_review').length
+
+  // Sans l'API Electron (application web servie par Docker ou navigateur),
+  // le workflow de corrections n'existe pas : on ne rend rien plutot qu'un
+  // panneau hors service.
+  if (!correctionsApi()) {
+    return null
+  }
 
   return (
     <section className="section-card">
@@ -197,8 +218,8 @@ function CorrectionsPanel({ apiUrl }) {
                           ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400'
                           : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
                     }`}>
-                      {entry.status === 'confirmed' && entry.apply_allowed === 'true' ? '��� Confirmée' : 
-                       entry.status === 'confirmed' ? 'Confirmée (apply_allowed=false)' : '��� En attente'}
+                      {entry.status === 'confirmed' && entry.apply_allowed === 'true' ? '✔ Confirmée' : 
+                       entry.status === 'confirmed' ? 'Confirmée (apply_allowed=false)' : '○ En attente'}
                     </span>
                   </td>
                   <td className="p-3">
