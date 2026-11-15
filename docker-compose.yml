@@ -16,6 +16,9 @@ services:
       # le depot est utilise sur une autre machine.
       - ${RPPS_DATA_DIR:-C:\Users\neuro\AppData\Local\rpps-neuro\data}:/app/data
       - ${RPPS_DATA_DIR:-C:\Users\neuro\AppData\Local\rpps-neuro\data}\corrections:/app/data/corrections
+      # Cache des fichiers RPPS/Ameli (1,2 Go) : hors du conteneur pour
+      # survivre aux recreations et eviter de retelecharger a chaque import.
+      - rpps_cache:/tmp/rpps_cache
     environment:
       - DATABASE_URL=sqlite:////app/data/neurologues.db
     restart: unless-stopped
@@ -37,3 +40,8 @@ services:
       api:
         condition: service_healthy
     restart: unless-stopped
+
+volumes:
+  # Cache persistant des fichiers RPPS/Ameli (1,2 Go) : survit aux recreations
+  # de conteneur, le rechargement complet ne retelecharge alors que l'API.
+  rpps_cache:

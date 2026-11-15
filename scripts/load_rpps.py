@@ -89,6 +89,26 @@ def download_file_streaming(url: str, cache_name: str) -> list[str]:
     cache_path = CACHE_DIR / f"{cache_name}.txt"
     temp_path = CACHE_DIR / f"{cache_name}.txt.part"
 
+    # Reutilisation du cache : si le fichier est deja complet (taille identique
+    # a celle annoncee par le serveur), on ne retelecharge pas ~1 Go.
+    if cache_path.exists():
+        try:
+            head = requests.head(url, timeout=30, allow_redirects=True)
+            expected = int(head.headers.get('Content-Length', 0))
+            actual = cache_path.stat().st_size
+            if expected and actual == expected:
+                print(f"Cache hit for {cache_name} ({actual} bytes), skipping download")
+                with open(cache_path, 'r', encoding='utf-8', errors='replace') as f:
+                    lines = f.read().splitlines()
+                print(f"Parsed {len(lines)} lines from cache")
+                return lines
+            if expected:
+                print(f"Cache stale for {cache_name} ({actual}/{expected} bytes), re-downloading")
+            else:
+                print(f"Cache size unknown for {cache_name}, re-downloading")
+        except Exception as e:
+            print(f"Cache check failed for {cache_name} ({e}), re-downloading")
+
     # Determine resume position
     resume_byte = 0
     if temp_path.exists():
