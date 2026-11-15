@@ -8,8 +8,14 @@ services:
       - "127.0.0.1:50000:8000"
       - "127.0.0.1:50001:8000"
     volumes:
-      - /home/laurent/.local/share/rpps-neuro/data:/app/data
-      - ./data/corrections:/app/data/corrections
+      # Repertoire des donnees (base SQLite RPPS + corrections).
+      # Surchargeable via la variable d'environnement RPPS_DATA_DIR.
+      # Docker Desktop ne partage pas le disque G: du projet : un bind-mount
+      # sur ce disque remontait un volume VIDE et la base a ete perdue a chaque
+      # recreation du conteneur (15/11/2026). Adapter la valeur par defaut si
+      # le depot est utilise sur une autre machine.
+      - ${RPPS_DATA_DIR:-C:\Users\neuro\AppData\Local\rpps-neuro\data}:/app/data
+      - ${RPPS_DATA_DIR:-C:\Users\neuro\AppData\Local\rpps-neuro\data}\corrections:/app/data/corrections
     environment:
       - DATABASE_URL=sqlite:////app/data/neurologues.db
     restart: unless-stopped
@@ -22,8 +28,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: rpps-frontend
     ports:
       - "127.0.0.1:5173:80"

@@ -9,6 +9,7 @@ import io
 import requests
 import gzip
 import tempfile
+import threading
 import time
 from pathlib import Path
 from sqlalchemy import text
@@ -28,40 +29,26 @@ FILES = {
 # Department to Region mapping (2024 - post 2016 reform)
 # Uses standard 3-letter codes: AuRA, BFC, BIF, etc.
 DEPT_TO_REGION = {
-    '01': 'AuRA', '03': 'AuRA', '04': 'AuRA', '07': 'AuRA', '15': 'AuRA',
-    '26': 'AuRA', '38': 'AuRA', '42': 'AuRA', '43': 'AuRA', '63': 'AuRA', '69': 'AuRA', '73': 'AuRA', '74': 'AuRA',
-    '10': 'AuRA',  # Ain -> AuRA (was missed)
-
-    '21': 'BFC', '25': 'BFC', '39': 'BFC', '58': 'BFC', '70': 'BFC', '71': 'BFC', '89': 'BFC',
-
-    '22': 'BIF', '29': 'BIF', '35': 'BIF', '56': 'BIF',
-
-    '18': 'Centre-Val', '28': 'Centre-Val', '36': 'Centre-Val', '37': 'Centre-Val', '41': 'Centre-Val', '45': 'Centre-Val',
-
-    '2A': 'Corse', '2B': 'Corse',
-
-    '08': 'Grand Est', '27': 'Grand Est', '86': 'NAQ', '90': 'Grand Est', '97': 'Corse', '98': 'BFC',
-
-    '02': 'Grand Est', '05': 'Grand Est', '51': 'Grand Est', '54': 'Grand Est', '55': 'Grand Est', '57': 'Grand Est',
-    '67': 'Grand Est', '68': 'Grand Est', '88': 'Grand Est', '52': 'Grand Est',  # l'Aube
-
-    '59': 'HDF', '60': 'HDF', '62': 'HDF', '80': 'HDF',
-
-    '971': 'GP', '972': 'FP', '973': 'GF', '974': 'RE', '975': 'SM', '976': 'SM',
-
-    '75': 'IDF', '77': 'IDF', '78': 'IDF', '91': 'IDF', '92': 'IDF', '93': 'IDF', '94': 'IDF', '95': 'IDF',
-
-    '14': 'Normandie', '50': 'Normandie', '61': 'Normandie', '76': 'Normandie',
-
-    '16': 'NAQ', '17': 'NAQ', '19': 'NAQ', '23': 'NAQ', '24': 'NAQ', '33': 'NAQ', '40': 'NAQ', '47': 'NAQ',
-    '64': 'NAQ', '79': 'NAQ', '87': 'NAQ',
-
-    '09': 'Occitanie', '11': 'Occitanie', '12': 'Occitanie', '30': 'Occitanie', '31': 'Occitanie', '32': 'Occitanie',
-    '34': 'Occitanie', '46': 'Occitanie', '48': 'Occitanie', '65': 'Occitanie', '66': 'Occitanie', '81': 'Occitanie', '82': 'Occitanie',
-
-    '44': 'PDL', '49': 'PDL', '53': 'PDL', '72': 'PDL', '85': 'PDL',
-
-    '06': 'PAC', '13': 'PAC', '83': 'PAC', '84': 'PAC',
+    '01': 'AuRA', '02': 'HDF', '03': 'AuRA', '04': 'PAC', '05': 'PAC', '06': 'PAC',
+    '07': 'AuRA', '08': 'Grand Est', '09': 'Occitanie', '10': 'Grand Est',
+    '11': 'Occitanie', '12': 'Occitanie', '13': 'PAC', '14': 'Normandie', '15': 'AuRA',
+    '16': 'NAQ', '17': 'NAQ', '18': 'Centre-Val', '19': 'NAQ', '21': 'BFC', '22': 'BIF',
+    '23': 'NAQ', '24': 'NAQ', '25': 'BFC', '26': 'AuRA', '27': 'Normandie',
+    '28': 'Centre-Val', '29': 'BIF', '2A': 'Corse', '2B': 'Corse', '30': 'Occitanie',
+    '31': 'Occitanie', '32': 'Occitanie', '33': 'NAQ', '34': 'Occitanie', '35': 'BIF',
+    '36': 'Centre-Val', '37': 'Centre-Val', '38': 'AuRA', '39': 'BFC', '40': 'NAQ',
+    '41': 'Centre-Val', '42': 'AuRA', '43': 'AuRA', '44': 'PDL', '45': 'Centre-Val',
+    '46': 'Occitanie', '47': 'NAQ', '48': 'Occitanie', '49': 'PDL', '50': 'Normandie',
+    '51': 'Grand Est', '52': 'Grand Est', '53': 'PDL', '54': 'Grand Est', '55': 'Grand Est',
+    '56': 'BIF', '57': 'Grand Est', '58': 'BFC', '59': 'HDF', '60': 'HDF',
+    '61': 'Normandie', '62': 'HDF', '63': 'AuRA', '64': 'NAQ', '65': 'Occitanie',
+    '66': 'Occitanie', '67': 'Grand Est', '68': 'Grand Est', '69': 'AuRA', '70': 'BFC',
+    '71': 'BFC', '72': 'PDL', '73': 'AuRA', '74': 'AuRA', '75': 'IDF', '76': 'Normandie',
+    '77': 'IDF', '78': 'IDF', '79': 'NAQ', '80': 'HDF', '81': 'Occitanie',
+    '82': 'Occitanie', '83': 'PAC', '84': 'PAC', '85': 'PDL', '86': 'NAQ', '87': 'NAQ',
+    '88': 'Grand Est', '89': 'BFC', '90': 'BFC', '91': 'IDF', '92': 'IDF', '93': 'IDF',
+    '94': 'IDF', '95': 'IDF', '971': 'GP', '972': 'FP', '973': 'GF', '974': 'RE',
+    '975': 'SPM', '976': 'YT', '977': 'SM', '978': 'SM', '98': 'PF'
 }
 
 CACHE_DIR = Path("/tmp/rpps_cache")
@@ -174,6 +161,25 @@ def load_neurologues():
     db = SessionLocal()
     init_db()
 
+    # L'enrichissement Ameli tourne EN PARALLELE du chargement RPPS :
+    # le fichier Ameli (156 Mo) est telecharge et indexe dans un thread, puis
+    # applique quand les neurologues RPPS sont en base.
+    ameli_state: dict = {"index": None, "error": None}
+
+    def _ameli_worker():
+        try:
+            import ameli_enrich
+            print("Ameli (parallel): download...")
+            csv_path = ameli_enrich.download_ameli()
+            print("Ameli (parallel): indexing...")
+            ameli_state["index"] = ameli_enrich.build_index(csv_path)
+        except Exception as e:
+            ameli_state["error"] = e
+            print("Ameli (parallel) failed: %s" % e)
+
+    ameli_thread = threading.Thread(target=_ameli_worker, name="ameli-enrich", daemon=True)
+    ameli_thread.start()
+
     db.query(Neurologue).delete()
     db.commit()
 
@@ -283,6 +289,22 @@ def load_neurologues():
 
     db.commit()
     print(f"Total neurologues loaded: {count}")
+
+    # Enrichissement Ameli (le thread a tourne en parallele pendant le load)
+    print("Waiting for the parallel Ameli thread...")
+    ameli_thread.join(timeout=3600)
+    if ameli_state.get("index"):
+        try:
+            import ameli_enrich
+            resolver = ameli_enrich.CpResolver(dept_to_region=DEPT_TO_REGION)
+            ameli_enrich.enrich_database(db, ameli_state["index"], resolver)
+        except Exception as e:
+            print("Ameli enrichment failed: %s" % e)
+    elif ameli_state.get("error"):
+        print("Ameli enrichment skipped: %s" % ameli_state["error"])
+    else:
+        print("Ameli enrichment skipped: index unavailable")
+
     db.close()
 
 
